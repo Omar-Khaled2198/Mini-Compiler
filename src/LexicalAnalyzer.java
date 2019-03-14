@@ -1,27 +1,58 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LexicalAnalyzer {
 
 	private String code;
 	private ArrayList<Token> tokens;
-	private RegTable regTable;
+	private Map<String, String> table;
 
 	public LexicalAnalyzer(String code) {
 		this.tokens = new ArrayList<Token>();
 		this.code = code;
-		this.regTable = new RegTable();
+		FileHandler fileHandler = FileHandler.getInstance();
+		table = fileHandler.readRegexTable();
 	}
 
-	public void tokenize() {
-		tokens=regTable.tokenize(code);
-		for(int i=0;i<tokens.size();i++) {
-			System.out.println(tokens.get(i).toString());
+	public ArrayList<Token> generateTokens() {
+		
+		for (Map.Entry<String, String> entry : table.entrySet()) {
+
+			Pattern pattern = Pattern.compile(entry.getValue());
+			Matcher matcher = pattern.matcher(code);
+
+			while (matcher.find()) {
+				Token token = new Token(entry.getKey(), matcher.group(), matcher.start(), matcher.end());
+				tokens.add(token);
+			}
 		}
-//		for (int i = 0; i < lexemes.size(); i++) {
-//			System.out.println(lexemes.get(i));
-////			regTable.tokenize(lexemes.get(i));
-//		}
+		Collections.sort(tokens);
+		for (int i = 0; i < tokens.size() - 1; i++) {
+			while (tokens.get(i).getStart() == tokens.get(i + 1).getStart()) {
+				if (tokens.get(i).getEnd() < tokens.get(i + 1).getEnd())
+					tokens.remove(i);
+				else if (tokens.get(i).getEnd() > tokens.get(i + 1).getEnd())
+					tokens.remove(i + 1);
+				else
+					break;
+			}
+			while (tokens.get(i).getStart() == tokens.get(i + 1).getStart()
+					&& tokens.get(i).getEnd() == tokens.get(i + 1).getEnd()) {
+				if (tokens.get(i).getType().equals("ID"))
+					tokens.remove(i);
+				else
+					tokens.remove(i + 1);
+			}
+			while (tokens.get(i).getEnd() > tokens.get(i + 1).getStart()) {
+				tokens.remove(i + 1);
+			}
+		}
+		return tokens;
 	}
 
 }
