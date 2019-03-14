@@ -1,0 +1,4 @@
+<INT>: int
+<ASSIGNMENT>: =
+<INTEGRAL_LITERAL>: 5
+<SEMICOLON>: ;

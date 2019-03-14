@@ -46,7 +46,6 @@ public class Token implements Comparable<Token> {
 
 	@Override
 	public int compareTo(Token token) {
-		// TODO Auto-generated method stub
 		return this.Start - token.getStart();
 	}
 

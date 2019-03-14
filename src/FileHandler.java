@@ -24,7 +24,6 @@ public class FileHandler {
 		return fileHandler;
 	}
 
-
 	public Map<String, String> readRegexTable() {
 
 		Map<String, String> table = new HashMap<String, String>();
@@ -65,5 +64,21 @@ public class FileHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public String readInput() {
+
+		String input = "";
+		Scanner scanner = null;
+		try {
+			scanner = new Scanner(new File(this.input));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		while (scanner.hasNextLine()) {
+			input += scanner.nextLine();
+		}
+		scanner.close();
+		return input;
 	}
 }
