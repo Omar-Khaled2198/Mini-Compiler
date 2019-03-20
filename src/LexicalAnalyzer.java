@@ -1,7 +1,5 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,6 +11,7 @@ public class LexicalAnalyzer {
 	private Map<String, String> table;
 
 	public LexicalAnalyzer(String code) {
+
 		this.tokens = new ArrayList<Token>();
 		this.code = code;
 		FileHandler fileHandler = FileHandler.getInstance();
@@ -20,7 +19,7 @@ public class LexicalAnalyzer {
 	}
 
 	public ArrayList<Token> generateTokens() {
-		
+
 		for (Map.Entry<String, String> entry : table.entrySet()) {
 
 			Pattern pattern = Pattern.compile(entry.getValue());
@@ -31,8 +30,11 @@ public class LexicalAnalyzer {
 				tokens.add(token);
 			}
 		}
+
 		Collections.sort(tokens);
+
 		for (int i = 0; i < tokens.size() - 1; i++) {
+
 			while (tokens.get(i).getStart() == tokens.get(i + 1).getStart()) {
 				if (tokens.get(i).getEnd() < tokens.get(i + 1).getEnd())
 					tokens.remove(i);
@@ -41,6 +43,7 @@ public class LexicalAnalyzer {
 				else
 					break;
 			}
+
 			while (tokens.get(i).getStart() == tokens.get(i + 1).getStart()
 					&& tokens.get(i).getEnd() == tokens.get(i + 1).getEnd()) {
 				if (tokens.get(i).getType().equals("ID"))
@@ -48,6 +51,7 @@ public class LexicalAnalyzer {
 				else
 					tokens.remove(i + 1);
 			}
+
 			while (tokens.get(i).getEnd() > tokens.get(i + 1).getStart()) {
 				tokens.remove(i + 1);
 			}

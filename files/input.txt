@@ -1,1 +1,8 @@
-int 9fasd = 5;
+struct address 
+{ 
+   char name; 
+   char street; 
+   char city; 
+   char state; 
+   int pin; 
+};
