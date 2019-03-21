@@ -34,7 +34,7 @@ public class LexicalAnalyzer {
 		Collections.sort(tokens);
 
 		for (int i = 0; i < tokens.size() - 1; i++) {
-
+			
 			while (tokens.get(i).getStart() == tokens.get(i + 1).getStart()) {
 				if (tokens.get(i).getEnd() < tokens.get(i + 1).getEnd())
 					tokens.remove(i);
@@ -55,6 +55,16 @@ public class LexicalAnalyzer {
 			while (tokens.get(i).getEnd() > tokens.get(i + 1).getStart()) {
 				tokens.remove(i + 1);
 			}
+			
+		
+			if(tokens.get(i+1).getStart()-tokens.get(i).getEnd()>1) {
+				Pattern pattern = Pattern.compile("\\S+");
+				Matcher matcher = pattern.matcher(code.substring(tokens.get(i).getEnd(), tokens.get(i+1).getStart()));
+				while (matcher.find()) {
+					System.out.println("Undefined: "+ matcher.group());
+				}
+			}
+
 		}
 		return tokens;
 	}
