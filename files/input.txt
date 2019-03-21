@@ -1,8 +1,1 @@
-int main(){
-	/* fjasdlk
-	*fkjlkadsj
-	* fljsdjaf
-	*/
-	int 432sfa=5,y=10,z=0;
-
-}
+string s = 'f';

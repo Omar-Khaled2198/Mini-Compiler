@@ -1,19 +1,5 @@
-<INT>: int
-<MAIN>: main
-<LEFT_ROUND_B>: (
-<RIGHT_ROUND_B>: )
-<LEFT_CURLY_B>: {
-<MULTI_COMMENT>: /* fjasdlk	*fkjlkadsj	* fljsdjaf	*/
-<INT>: int
+<ID>: string
+<ID>: s
 <ASSIGNMENT>: =
-<INTEGRAL_LITERAL>: 5
-<COMMA>: ,
-<ID>: y
-<ASSIGNMENT>: =
-<INTEGRAL_LITERAL>: 10
-<COMMA>: ,
-<ID>: z
-<ASSIGNMENT>: =
-<INTEGRAL_LITERAL>: 0
+<CHAT_LITERAL>: 'f'
 <SEMICOLON>: ;
-<RIGHT_CURLY_B>: }

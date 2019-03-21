@@ -19,6 +19,7 @@ ELSE \belse\b
 MAIN \bmain\b
 PRIVATE \bprivate\b
 CLASS \bclass\b
+SINGLE_COMMENT \/\/.+
 MULTI_COMMENT /\*(.|[\r\n])*\*/
 INTEGRAL_LITERAL \b0|[1-9][0-9]*\b
 FlOAT_LITERAL \b[1-9]*\.+[0-9]*\b
@@ -73,8 +74,8 @@ DOT \.
 NOT !
 PREPROCESSOR #
 NOT_EQUAL \b!=\b
-AND \b\&&\b
-OR \b\|\|\b
+AND &&
+OR \|\|
 BACK_SLASH \\
 MINUS \-
 DIVIDE \/
@@ -91,4 +92,3 @@ BITWISE_XOR \^
 BITWISE_NOT \~
 LEFT_SHIFT \b>>\b
 RIGHT_SHIFT \b<<\b
-EOL \n

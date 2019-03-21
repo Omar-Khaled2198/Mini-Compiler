@@ -35,29 +35,29 @@ public class LexicalAnalyzer {
 
 		for (int i = 0; i < tokens.size() - 1; i++) {
 			
-			while (tokens.get(i).getStart() == tokens.get(i + 1).getStart()) {
-				if (tokens.get(i).getEnd() < tokens.get(i + 1).getEnd())
-					tokens.remove(i);
-				else if (tokens.get(i).getEnd() > tokens.get(i + 1).getEnd())
-					tokens.remove(i + 1);
-				else
-					break;
-			}
-
-			while (tokens.get(i).getStart() == tokens.get(i + 1).getStart()
+			while (i+1<tokens.size()&&tokens.get(i).getStart() == tokens.get(i + 1).getStart()
 					&& tokens.get(i).getEnd() == tokens.get(i + 1).getEnd()) {
 				if (tokens.get(i).getType().equals("ID"))
 					tokens.remove(i);
 				else
 					tokens.remove(i + 1);
 			}
+			
+			while (i+1<tokens.size()&&tokens.get(i).getStart() == tokens.get(i + 1).getStart()) {
+				if (tokens.get(i).getEnd() < tokens.get(i + 1).getEnd())
+					tokens.remove(i);
+				else if (tokens.get(i).getEnd() > tokens.get(i + 1).getEnd())
+					tokens.remove(i + 1);
+			}
 
-			while (tokens.get(i).getEnd() > tokens.get(i + 1).getStart()) {
+			
+
+			while (i+1<tokens.size()&&tokens.get(i).getEnd() > tokens.get(i + 1).getStart()) {
 				tokens.remove(i + 1);
 			}
 			
 		
-			if(tokens.get(i+1).getStart()-tokens.get(i).getEnd()>1) {
+			if(i+1<tokens.size()&&tokens.get(i+1).getStart()-tokens.get(i).getEnd()>1) {
 				Pattern pattern = Pattern.compile("\\S+");
 				Matcher matcher = pattern.matcher(code.substring(tokens.get(i).getEnd(), tokens.get(i+1).getStart()));
 				while (matcher.find()) {

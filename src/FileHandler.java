@@ -76,7 +76,7 @@ public class FileHandler {
 			e.printStackTrace();
 		}
 		while (scanner.hasNextLine()) {
-			input += scanner.nextLine();
+			input += scanner.nextLine()+"\n";
 		}
 		scanner.close();
 		return input;
