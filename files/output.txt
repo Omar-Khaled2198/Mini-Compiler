@@ -1,4 +1,7 @@
 <INT>: int
+<ID>: y
+<SEMICOLON>: ;
+<INT>: int
 <ID>: x
 <LEFT_ROUND_B>: (
 <INT>: int
@@ -8,9 +11,3 @@
 <RIGHT_ROUND_B>: )
 <LEFT_CURLY_B>: {
 <RIGHT_CURLY_B>: }
-<INT>: int
-<ID>: y
-<SEMICOLON>: ;
-<INT>: int
-<ID>: j
-<SEMICOLON>: ;

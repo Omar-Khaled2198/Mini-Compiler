@@ -1,3 +1,2 @@
-int x(int y[]){}
 int y;
-int j;
+int x(int y[]){}
