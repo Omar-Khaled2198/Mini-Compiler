@@ -1,1 +1,3 @@
-string s = 'f';
+int x;
+int y;
+int g;

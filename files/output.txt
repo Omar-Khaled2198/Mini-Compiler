@@ -1,5 +1,8 @@
-<ID>: string
-<ID>: s
-<ASSIGNMENT>: =
-<CHAT_LITERAL>: 'f'
+<INT>: int
+<ID>: x
 <SEMICOLON>: ;
+<INT>: int
+<ID>: y
+<SEMICOLON>: ;
+<INT>: int
+<ID>: g

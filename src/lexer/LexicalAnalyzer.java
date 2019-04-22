@@ -1,3 +1,7 @@
+package lexer;
+
+import utils.FileHandler;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
@@ -15,7 +19,7 @@ public class LexicalAnalyzer {
 		this.tokens = new ArrayList<Token>();
 		this.code = code;
 		FileHandler fileHandler = FileHandler.getInstance();
-		table = fileHandler.readRegexTable();
+		table = fileHandler.readRegexTable("files/regex.txt");
 	}
 
 	public ArrayList<Token> generateTokens() {

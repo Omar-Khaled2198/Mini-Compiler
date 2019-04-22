@@ -1,3 +1,5 @@
+package lexer;
+
 public class Token implements Comparable<Token> {
 
 	private String Type;

@@ -20,11 +20,11 @@ MAIN \bmain\b
 PRIVATE \bprivate\b
 CLASS \bclass\b
 SINGLE_COMMENT \/\/.+
-MULTI_COMMENT /\*(.|[\r\n])*\*/
+MULTI_COMMENT \/\*(.|\n)*?\\*\/ ?
 INTEGRAL_LITERAL \b0|[1-9][0-9]*\b
-FlOAT_LITERAL \b[1-9]*\.+[0-9]*\b
+FlOAT_LITERAL \b[1-9]*\.{1}[0-9]+\b
 CHAT_LITERAL \'[a-zA-z0-9]\'
-STRING_LITERAL (\".*?(?<!\\)\")
+STRING_LITERAL \".*\"
 TRUE \btrue\b
 FALSE \bfalse\b
 VOID \bvoid\b
@@ -42,6 +42,7 @@ CASE \bcase\b
 CATCH \bcatch\b
 CONST \bconst\b
 DEFAULT \bdefault\b
+PRINT \bprint\b
 DO \bdo\b
 DOUBLE \bdouble\b
 ENUM \benum\b

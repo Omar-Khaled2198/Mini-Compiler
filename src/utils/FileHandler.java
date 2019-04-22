@@ -1,3 +1,7 @@
+package utils;
+
+import lexer.Token;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,10 +17,6 @@ public class FileHandler {
 
 	private static FileHandler fileHandler = null;
 
-	private String regex = "files/regex.txt";
-	private String input = "files/input.txt";
-	private String output = "files/output.txt";
-
 	public static FileHandler getInstance() {
 		if (fileHandler == null)
 			fileHandler = new FileHandler();
@@ -24,12 +24,12 @@ public class FileHandler {
 		return fileHandler;
 	}
 
-	public Map<String, String> readRegexTable() {
+	public Map<String, String> readRegexTable(String fileName) {
 
 		Map<String, String> table = new HashMap<String, String>();
 		Scanner scanner = null;
 		try {
-			scanner = new Scanner(new File(regex));
+			scanner = new Scanner(new File(fileName));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -42,10 +42,10 @@ public class FileHandler {
 		return table;
 	}
 
-	public void writeOutput(ArrayList<Token> tokens) {
+	public void writeOutput(ArrayList<Token> tokens, String fileName) {
 		FileOutputStream fileOutputStream = null;
 		try {
-			fileOutputStream = new FileOutputStream(new File(output));
+			fileOutputStream = new FileOutputStream(new File(fileName));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -66,12 +66,12 @@ public class FileHandler {
 		}
 	}
 
-	public String readInput() {
+	public String readInput(String fileName) {
 
 		String input = "";
 		Scanner scanner = null;
 		try {
-			scanner = new Scanner(new File(this.input));
+			scanner = new Scanner(new File(fileName));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
