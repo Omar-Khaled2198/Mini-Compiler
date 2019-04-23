@@ -1,4 +1,14 @@
 package parser.rules;
 
-public interface If_Stmt extends Stmt{
+import lexer.Token;
+
+public class If_Stmt implements Stmt{
+
+    public Token If;
+    public Token LS;
+    public Expr expr;
+    public Token RS;
+    public Stmt stmt;
+    public If_Stmt_Dash if_stmt_dash;
+
 }

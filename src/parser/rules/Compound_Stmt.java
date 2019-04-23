@@ -5,5 +5,7 @@ import lexer.Token;
 public class Compound_Stmt {
 
     public Token LC;
+    public Local_Decals local_decals;
+    public Stmt_List stmt_list;
     public Token RC;
 }
