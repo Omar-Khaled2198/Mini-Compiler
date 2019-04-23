@@ -1,3 +1,10 @@
-<ID>: intu
+<INT>: int
 <ID>: x
 <SEMICOLON>: ;
+<INT>: int
+<ID>: y
+<LEFT_ROUND_B>: (
+<ID>: l
+<RIGHT_ROUND_B>: )
+<LEFT_CURLY_B>: {
+<RIGHT_CURLY_B>: }

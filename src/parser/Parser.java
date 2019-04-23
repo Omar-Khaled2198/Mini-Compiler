@@ -8,21 +8,14 @@ import java.util.*;
 public class Parser {
 
     public Deque<Token> tokens;
-    public Stack<Token> stack;
 
     public Parser(ArrayList<Token> tokens) {
         this.tokens = new LinkedList<>(tokens);
-        this.stack = new Stack<>();
-
 
     }
 
     public void parse() {
         Program program = program_function();
-        // System.out.println(program);
-//        program.printNode();
-        //program_function();
-
     }
 
     public Program program_function() {
@@ -76,17 +69,10 @@ public class Parser {
     public Decl decl_function() {
         if (tokens.peek() != null) {
 
-            int stack_size = stack.size();
             Var_Decl var_decl = var_decl_function();
 
             if (var_decl != null) {
                 return var_decl;
-            }
-
-            for (int i = 0; i <= stack.size() - stack_size; i++) {
-                if (stack.empty())
-                    break;
-                tokens.addFirst(stack.pop());
             }
 
             Fun_Decl fun_decl = fun_decl_function();
@@ -105,10 +91,8 @@ public class Parser {
             Token type_spec = type_spec_function();
             if (type_spec != null) {
                 var_decl.type_spec = type_spec;
-                stack.push(var_decl.type_spec);
                 if (tokens.peek() != null && tokens.peek().getType().equals("ID")) {
                     var_decl.id = tokens.poll();
-                    stack.push(var_decl.id);
                     Var_Decl_Dash var_decl_dash = var_decl_dash_function();
                     if (var_decl_dash != null) {
                         var_decl.var_decl_dash = var_decl_dash;
@@ -124,6 +108,11 @@ public class Parser {
             } else {
                 System.out.println("Error: can't resolve '" + tokens.peek().getValue() + "'");
             }
+            if(var_decl.id!=null)
+                tokens.addFirst(var_decl.id);
+            if(var_decl.type_spec!=null)
+                tokens.addFirst(var_decl.type_spec);
+
         }
         return null;
 
@@ -134,20 +123,17 @@ public class Parser {
             if (tokens.peek().getValue().equals(";")) {
                 Var_Decl_Dash1 var_decl_dash1 = new Var_Decl_Dash1();
                 var_decl_dash1.simicolon = tokens.poll();
-                stack.push(var_decl_dash1.simicolon);
+
                 return var_decl_dash1;
             }
 
             if (tokens.peek().getValue().equals("[")) {
                 Var_Decl_Dash2 var_decl_dash2 = new Var_Decl_Dash2();
                 var_decl_dash2.LB = tokens.poll();
-                stack.push(var_decl_dash2.LB);
                 if (tokens.peek() != null && tokens.peek().getValue().equals("]")) {
                     var_decl_dash2.RB = tokens.poll();
-                    stack.push(var_decl_dash2.RB);
                     if (tokens.peek() != null && tokens.peek().getValue().equals(";")) {
                         var_decl_dash2.simicolon = tokens.poll();
-                        stack.push(var_decl_dash2.simicolon);
                         return var_decl_dash2;
 
                     } else {
@@ -158,6 +144,11 @@ public class Parser {
 
                     System.out.println("Error: ] is missing");
                 }
+                if(var_decl_dash2.RB!=null)
+                    tokens.addFirst(var_decl_dash2.RB);
+                if(var_decl_dash2.LB!=null)
+                    tokens.addFirst(var_decl_dash2.LB);
+
             }
         }
         return null;
@@ -182,22 +173,19 @@ public class Parser {
             Token type_spec = type_spec_function();
 
             if (type_spec != null) {
+
                 fun_decl.type_spec = type_spec;
-                stack.push(fun_decl.type_spec);
 
                 if (tokens.peek() != null && tokens.peek().getType().equals("ID")) {
                     fun_decl.id = tokens.poll();
-                    stack.push(fun_decl.id);
                     if (tokens.peek() != null && tokens.peek().getValue().equals("(")) {
                         fun_decl.LB = tokens.poll();
-                        stack.push(fun_decl.LB);
                         Params params = params_function();
                         if (params != null) {
                             fun_decl.params = params;
                         }
                         if (tokens.peek() != null && tokens.peek().getValue().equals(")")) {
                             fun_decl.RB = tokens.poll();
-                            stack.push(fun_decl.RB);
                             Compound_Stmt compound_stmt = compound_stmt_function();
                             if (compound_stmt != null) {
                                 fun_decl.compound_stmt = compound_stmt;
@@ -219,9 +207,18 @@ public class Parser {
 
                 }
 
-            } else {
-
             }
+            if(fun_decl.RB!=null)
+                tokens.addFirst(fun_decl.RB);
+            if(fun_decl.LB!=null)
+                tokens.addFirst(fun_decl.LB);
+            if(fun_decl.id!=null)
+                tokens.addFirst(fun_decl.id);
+            if(fun_decl.type_spec!=null)
+                tokens.addFirst(fun_decl.type_spec);
+
+
+
         }
 
         return null;
@@ -239,7 +236,6 @@ public class Parser {
             if (tokens.peek().getType().equals("VOID")) {
                 Params2 params2 = new Params2();
                 params2.Void = tokens.poll();
-                stack.push(params2.Void);
                 return params2;
             }
 
@@ -265,10 +261,9 @@ public class Parser {
 
     public Param_List_Dash param_list_dash_function() {
         if (tokens.peek() != null) {
+            Param_List_Dash param_list_dash = new Param_List_Dash();
             if (tokens.peek().getValue().equals(",")) {
-                Param_List_Dash param_list_dash = new Param_List_Dash();
                 param_list_dash.comma = tokens.poll();
-                stack.push(param_list_dash.comma);
                 Param param = param_function();
                 if (param != null) {
                     param_list_dash.param = param;
@@ -276,6 +271,8 @@ public class Parser {
                     return param_list_dash;
                 }
             }
+            if(param_list_dash.comma!=null)
+                tokens.addFirst(param_list_dash.comma);
         }
 
         return null;
@@ -291,14 +288,15 @@ public class Parser {
             if (type_spec != null) {
 
                 param.type_spec = type_spec;
-                stack.push(param.type_spec);
                 if (tokens.peek() != null && tokens.peek().getType().equals("ID")) {
                     param.id = tokens.poll();
-                    stack.push(param.id);
                     param.param_dash = param_dash_function();
                     return param;
                 }
+
             }
+            if(param.type_spec!=null)
+                tokens.addFirst(param.type_spec);
 
 
         }
@@ -313,15 +311,15 @@ public class Parser {
             Param_Dash param_dash = new Param_Dash();
             if (tokens.peek().getValue().equals("[")) {
                 param_dash.LS = tokens.poll();
-                stack.push(param_dash.LS);
                 if (tokens.peek() != null && tokens.peek().getValue().equals("]")) {
                     param_dash.RS = tokens.poll();
-                    stack.push(param_dash.RS);
                     return param_dash;
                 } else {
                     System.out.println("Error: ] is missing");
                 }
             }
+            if(param_dash.LS!=null)
+                tokens.addFirst(param_dash.LS);
         }
 
         return null;
@@ -335,12 +333,11 @@ public class Parser {
 
             if (tokens.peek().getValue().equals("{")) {
                 compound_stmt.LC = tokens.poll();
-                stack.push(compound_stmt.LC);
 
                 if (tokens.peek() != null && tokens.peek().getValue().equals("}")) {
                     compound_stmt.RC = tokens.poll();
-                    stack.push(compound_stmt.RC);
                     return compound_stmt;
+
                 } else {
 
                     if (tokens.peek() != null)
@@ -350,6 +347,8 @@ public class Parser {
 
                 }
             }
+            if(compound_stmt.LC!=null)
+                tokens.addFirst(compound_stmt.LC);
 
         } else {
 
