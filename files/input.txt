@@ -1,2 +1,5 @@
 int x;
-int y(){}
+int y(int l,int h){
+    int o[];
+    int y;
+}
