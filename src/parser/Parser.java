@@ -84,6 +84,8 @@ public class Parser {
             }
 
             for (int i = 0; i <= stack.size() - stack_size; i++) {
+                if (stack.empty())
+                    break;
                 tokens.addFirst(stack.pop());
             }
 
@@ -111,10 +113,16 @@ public class Parser {
                     if (var_decl_dash != null) {
                         var_decl.var_decl_dash = var_decl_dash;
                         return var_decl;
+                    } else if (tokens.peek() == null || !tokens.peek().getValue().equals("(")) {
+                        System.out.println("Error: ; is missing");
                     }
 
+                } else {
+                    System.out.println("Error: can't resolve '" + tokens.peek().getValue() + "'");
                 }
 
+            } else {
+                System.out.println("Error: can't resolve '" + tokens.peek().getValue() + "'");
             }
         }
         return null;
@@ -197,20 +205,22 @@ public class Parser {
                             }
                         } else {
 
-                            System.out.println("Error: ) is missing");
+                            if (tokens.peek() != null)
+                                System.out.println("Error: can't resolve '" + tokens.peek().getValue() + "'");
+                            else
+                                System.out.println("Error: ) is missing");
                         }
 
                     } else {
 
-                        System.out.println("Error: can't resolve '" + tokens.peek().getValue() + "'");
                     }
                 } else {
 
-                    System.out.println("Error: can't resolve '" + tokens.peek().getValue() + "'");
+
                 }
 
             } else {
-                System.out.println("Error5: can't resolve '" + tokens.peek().getValue() + "'");
+
             }
         }
 
@@ -320,18 +330,29 @@ public class Parser {
 
     public Compound_Stmt compound_stmt_function() {
         if (tokens.peek() != null) {
+
             Compound_Stmt compound_stmt = new Compound_Stmt();
+
             if (tokens.peek().getValue().equals("{")) {
                 compound_stmt.LC = tokens.poll();
                 stack.push(compound_stmt.LC);
+
                 if (tokens.peek() != null && tokens.peek().getValue().equals("}")) {
                     compound_stmt.RC = tokens.poll();
                     stack.push(compound_stmt.RC);
                     return compound_stmt;
                 } else {
-                    System.out.println("Error: } is missing");
+
+                    if (tokens.peek() != null)
+                        System.out.println("Error: can't resolve '" + tokens.peek().getValue() + "'");
+                    else
+                        System.out.println("Error: } is missing");
+
                 }
             }
+
+        } else {
+            System.out.println("Error: {} is missing");
         }
 
         return null;
