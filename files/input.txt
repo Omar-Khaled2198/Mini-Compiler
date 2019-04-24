@@ -1,14 +1,28 @@
 int x;
-int y(int l){
-    int fly;
-    fly=5+10;
-    fly=5+x;
-    if(x==5&&(fly==x)){
-      int h;
-      h=0;
-    } else {
-       int h;
-       h=5;
+int y(){
 
+    if(x==5){
+        int x;
+        x=10;
     }
+
+    while(true){
+        int omar;
+        if(omar==5){
+            String bird;
+            bird="omar";
+            if(bird=="omar"){
+                omar[n]='a';
+                return "fuck";
+            } else {
+                return "fuck2";
+                break;
+
+            }
+        }
+    }
+}
+
+int l(int x){
+    return;
 }

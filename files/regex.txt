@@ -26,8 +26,6 @@ FlOAT_LITERAL \b[1-9]*\.{1}[0-9]+\b
 CHAT_LITERAL \'[a-zA-z0-9]\'
 STRING_LITERAL \".*\"
 BOOL_LITERAL \b(true|false)\b
-TRUE \btrue\b
-FALSE \bfalse\b
 VOID \bvoid\b
 PUBLIC \bpublic\b
 PROTECTED \bprotected\b

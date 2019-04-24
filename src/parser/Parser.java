@@ -76,11 +76,14 @@ public class Parser {
                 if (tokens.peek() != null && tokens.peek().getType().equals("ID")) {
                     id = tokens.poll();
                 } else {
-                    System.out.println("Error: can't resolve '" + tokens.peek().getValue() + "'");
+                    System.out.println("Error79: can't resolve '" + tokens.peek().getValue() + "'");
+                    System.exit(0);
                     return null;
                 }
+
             } else {
-                System.out.println("Error: can't resolve '" + tokens.peek().getValue() + "'");
+                System.out.println("Error85: can't resolve '" + tokens.peek().getValue() + "'");
+                System.exit(0);
                 return null;
             }
 
@@ -104,8 +107,8 @@ public class Parser {
 
             }
 
-            System.out.println("Error: ; is missing");
-
+            System.out.println("Error110: ; is missing");
+            System.exit(0);
 
         }
 
@@ -148,18 +151,22 @@ public class Parser {
 
                     } else {
 
-                        System.out.println("Error: ; is missing");
+                        System.out.println("Error154: ; is missing");
+                        System.exit(0);
 
                     }
                 } else {
 
-                    System.out.println("Error: ] is missing");
+                    System.out.println("Error160: ] is missing");
+                    System.exit(0);
                 }
 
             } else {
-                System.out.println("Error: ; is missing");
+                System.out.println("Error165: ; is missing");
+                System.exit(0);
             }
         }
+        System.out.println("Error169: ; is missing");
         System.exit(0);
         return null;
     }
@@ -169,7 +176,8 @@ public class Parser {
             if (tokens.peek().getType().equals("VOID") ||
                     tokens.peek().getType().equals("BOOL") ||
                     tokens.peek().getType().equals("INT") ||
-                    tokens.peek().getType().equals("FLOAT")) {
+                    tokens.peek().getType().equals("FLOAT")||
+                    tokens.peek().getType().equals("STRING")) {
                 return tokens.poll();
             }
         }
@@ -194,6 +202,9 @@ public class Parser {
                         fun_decl.compound_stmt = compound_stmt;
                         return fun_decl;
                     }
+                } else {
+                    System.out.println("Error205: ) is missing");
+                    System.exit(0);
                 }
             }
 
@@ -248,6 +259,9 @@ public class Parser {
                     param_list_dash.param = param;
                     param_list_dash.param_list_dash = param_list_dash_function();
                     return param_list_dash;
+                } else {
+                    System.out.println("Error252: can't resolve ',' ");
+                    System.exit(0);
                 }
             }
 
@@ -270,6 +284,8 @@ public class Parser {
                     param.id = tokens.poll();
                     param.param_dash = param_dash_function();
                     return param;
+                } else {
+                    System.out.println("Error287: can't resolve '"+tokens.peek().getValue()+"'");
                 }
 
             }
@@ -291,7 +307,8 @@ public class Parser {
                     param_dash.RS = tokens.poll();
                     return param_dash;
                 } else {
-                    System.out.println("Error: ] is missing");
+                    System.out.println("Error309: ] is missing");
+                    System.exit(0);
                 }
             }
 
@@ -301,8 +318,8 @@ public class Parser {
 
     }
 
-    public Stmt_List stmt_list_function(){
-        if(tokens.peek()!=null){
+    private Stmt_List stmt_list_function() {
+        if (tokens.peek() != null) {
             Stmt_List stmt_list = new Stmt_List();
             stmt_list.stmt_list_dash = stmt_list_dash_function();
             return stmt_list;
@@ -311,13 +328,13 @@ public class Parser {
         return null;
     }
 
-    public Stmt_List_Dash stmt_list_dash_function(){
-        if (tokens.peek()!=null){
+    private Stmt_List_Dash stmt_list_dash_function() {
+        if (tokens.peek() != null) {
             Stmt_List_Dash stmt_list_dash = new Stmt_List_Dash();
             Stmt stmt = stmt_function();
-            if(stmt!=null){
+            if (stmt != null) {
                 stmt_list_dash.stmt = stmt;
-                stmt_list_dash.stmt_list_dash= stmt_list_dash_function();
+                stmt_list_dash.stmt_list_dash = stmt_list_dash_function();
                 return stmt_list_dash;
             }
         }
@@ -326,47 +343,60 @@ public class Parser {
 
     }
 
-    public Stmt stmt_function(){
+    private Stmt stmt_function() {
 
-        if(tokens.peek()!=null){
-            if(tokens.peek().getValue().equals("{")){
+        if (tokens.peek() != null) {
+            if (tokens.peek().getValue().equals("{")) {
                 return compound_stmt_function();
             }
 
-            if(tokens.peek().getValue().equals("if")){
+            if (tokens.peek().getValue().equals("if")) {
 
                 return if_stmt_function();
             }
 
-            if(tokens.peek().getValue().equals("while")){
+            if (tokens.peek().getValue().equals("while")) {
                 return while_stmt_function();
             }
 
-            if(tokens.peek().getValue().equals("return")){
+            if (tokens.peek().getValue().equals("return")) {
                 return return_stmt_function();
             }
 
-            if(tokens.peek().getValue().equals("break")){
+            if (tokens.peek().getValue().equals("break")) {
                 Break_Stmt break_stmt = new Break_Stmt();
-                break_stmt.Break=tokens.poll();
-                return break_stmt;
+                break_stmt.Break = tokens.poll();
+                if(tokens.peek()!=null&&tokens.peek().getValue().equals(";")){
+                    break_stmt.simicolon=tokens.poll();
+                    return break_stmt;
+                } else {
+                    System.out.println("Error373: ; is missing");
+                    System.exit(0);
+                }
+
             }
 
-            return expr_stmt_function();
+            Expr_Stmt expr_stmt = expr_stmt_function();
+            if(expr_stmt!=null){
+                return expr_stmt;
+            }
+
+//            System.out.println("Error: can't resolve '"+tokens.peek().getValue()+"'");
+//            System.exit(0);
         }
 
         return null;
 
     }
 
-    public Return_Stmt return_stmt_function(){
+    private Return_Stmt return_stmt_function() {
 
-        if(tokens.peek()!=null){
-            if(tokens.peek().getValue().equals("return")){
+        if (tokens.peek() != null) {
+            if (tokens.peek().getValue().equals("return")) {
                 Return_Stmt return_stmt = new Return_Stmt();
-                return_stmt.Return=tokens.poll();
+                return_stmt.Return = tokens.poll();
                 Return_Stmt_Dash return_stmt_dash = return_stmt_dash_function();
-                if(return_stmt_dash!=null){
+                if (return_stmt_dash != null) {
                     return_stmt.return_stmt_dash = return_stmt_dash;
                     return return_stmt;
                 }
@@ -377,73 +407,88 @@ public class Parser {
 
     }
 
-    public Return_Stmt_Dash return_stmt_dash_function(){
+    private Return_Stmt_Dash return_stmt_dash_function() {
 
-        if(tokens.peek()!=null){
-            if(tokens.peek().getValue().equals(";")){
+        if (tokens.peek() != null) {
+            if (tokens.peek().getValue().equals(";")) {
                 Return_Stmt_Dash1 return_stmt_dash1 = new Return_Stmt_Dash1();
-                return_stmt_dash1.simicolon=tokens.poll();
+                return_stmt_dash1.simicolon = tokens.poll();
                 return return_stmt_dash1;
             } else {
                 Expr expr = expr_function();
                 Return_Stmt_Dash2 return_stmt_dash2 = new Return_Stmt_Dash2();
-                if(expr!=null){
-                    return_stmt_dash2.expr=expr;
-                    if(tokens.peek()!=null&&tokens.peek().getValue().equals(";")){
-                        return_stmt_dash2.simicolon=tokens.poll();
+                if (expr != null) {
+                    return_stmt_dash2.expr = expr;
+                    if (tokens.peek() != null && tokens.peek().getValue().equals(";")) {
+                        return_stmt_dash2.simicolon = tokens.poll();
                         return return_stmt_dash2;
                     }
                 }
             }
         }
 
+        System.out.println("Error416: ; is missing");
+        System.exit(0);
         return null;
     }
 
-    public Expr_Stmt expr_stmt_function(){
+    private Expr_Stmt expr_stmt_function() {
 
-        if(tokens.peek()!=null){
-            if(tokens.peek().getValue().equals(";")){
+        if (tokens.peek() != null) {
+            if (tokens.peek().getValue().equals(";")) {
                 Expr_Stmt2 expr_stmt2 = new Expr_Stmt2();
-                expr_stmt2.simicolon=tokens.poll();
+                expr_stmt2.simicolon = tokens.poll();
                 return expr_stmt2;
             } else {
                 Expr expr = expr_function();
                 Expr_Stmt1 expr_stmt1 = new Expr_Stmt1();
-                if(expr!=null){
-                    expr_stmt1.expr=expr;
-                    if(tokens.peek()!=null&&tokens.peek().getValue().equals(";")){
-                        expr_stmt1.simicolon=tokens.poll();
+                if (expr != null) {
+                    expr_stmt1.expr = expr;
+                    if (tokens.peek() != null && tokens.peek().getValue().equals(";")) {
+                        expr_stmt1.simicolon = tokens.poll();
                         return expr_stmt1;
+                    } else {
+                        System.out.println("Error444: ; is missing");
+                        System.exit(0);
                     }
                 }
             }
         }
 
+
         return null;
 
     }
 
-    public While_Stmt while_stmt_function(){
+    private While_Stmt while_stmt_function() {
 
-        if(tokens.peek()!=null){
-            if(tokens.peek().getValue().equals("while")){
+        if (tokens.peek() != null) {
+            if (tokens.peek().getValue().equals("while")) {
                 While_Stmt while_stmt = new While_Stmt();
-                while_stmt.While=tokens.poll();
-                if(tokens.peek()!=null&&tokens.peek().getValue().equals("(")){
-                    while_stmt.LS=tokens.poll();
+                while_stmt.While = tokens.poll();
+                if (tokens.peek() != null && tokens.peek().getValue().equals("(")) {
+                    while_stmt.LS = tokens.poll();
                     Expr expr = expr_function();
-                    if(expr!=null){
-                        while_stmt.expr=expr;
-                        if(tokens.peek()!=null&&tokens.peek().getValue().equals(")")){
-                            while_stmt.RS=tokens.poll();
+                    if (expr != null) {
+                        while_stmt.expr = expr;
+                        if (tokens.peek() != null && tokens.peek().getValue().equals(")")) {
+                            while_stmt.RS = tokens.poll();
                             Stmt stmt = stmt_function();
-                            if(stmt!=null){
-                                while_stmt.stmt=stmt;
+                            if (stmt != null) {
+                                while_stmt.stmt = stmt;
                                 return while_stmt;
                             }
+                        } else {
+                            System.out.println("Error466: ) is missing");
+                            System.exit(0);
                         }
+                    } else {
+                        System.out.println("Error472: expression can't be empty");
+                        System.exit(0);
                     }
+                } else {
+                    System.out.println("Error471: ( is missing");
+                    System.exit(0);
                 }
             }
         }
@@ -463,44 +508,56 @@ public class Parser {
 
                 compound_stmt.local_decals = local_decals_function();
                 compound_stmt.stmt_list = stmt_list_function();
-
                 if (tokens.peek() != null && tokens.peek().getValue().equals("}")) {
                     compound_stmt.RC = tokens.poll();
                     return compound_stmt;
 
+                } else {
+                    System.out.println("Error498: } is missing");
+                    System.exit(0);
                 }
             }
 
 
         } else {
 
-            System.out.println("Error: {} is missing");
+            System.out.println("Error506: {} is missing");
         }
 
         return null;
     }
 
-    private If_Stmt if_stmt_function(){
-        if(tokens.peek()!=null){
-            if(tokens.peek().getValue().equals("if")){
-                If_Stmt if_stmt =new If_Stmt();
-                if_stmt.If=tokens.poll();
-                if(tokens.peek()!=null&&tokens.peek().getValue().equals("(")){
-                    if_stmt.LS=tokens.poll();
+    private If_Stmt if_stmt_function() {
+        if (tokens.peek() != null) {
+            if (tokens.peek().getValue().equals("if")) {
+                If_Stmt if_stmt = new If_Stmt();
+                if_stmt.If = tokens.poll();
+                if (tokens.peek() != null && tokens.peek().getValue().equals("(")) {
+                    if_stmt.LS = tokens.poll();
                     Expr expr = expr_function();
-                    if(expr!=null){
-                        if_stmt.expr=expr;
-                        if(tokens.peek()!=null&&tokens.peek().getValue().equals(")")){
-                            if_stmt.RS=tokens.poll();
+                    if (expr != null) {
+                        if_stmt.expr = expr;
+                        if (tokens.peek() != null && tokens.peek().getValue().equals(")")) {
+                            if_stmt.RS = tokens.poll();
                             Stmt stmt = stmt_function();
-                            if(stmt!=null){
-                                if_stmt.stmt=stmt;
-                                if_stmt.if_stmt_dash=if_stmt_dash_function();
+                            if (stmt != null) {
+                                if_stmt.stmt = stmt;
+                                if_stmt.if_stmt_dash = if_stmt_dash_function();
                                 return if_stmt;
                             }
+                        } else {
+                            System.out.println("Error531: ) is missing");
+                            System.exit(0);
                         }
                     }
+                    else {
+                        System.out.println("Error537: expression can't be empty");
+                        System.exit(0);
+                    }
 
+                } else {
+                    System.out.println("Error537: ( is missing");
+                    System.exit(0);
                 }
             }
         }
@@ -508,14 +565,14 @@ public class Parser {
         return null;
     }
 
-    private If_Stmt_Dash if_stmt_dash_function(){
+    private If_Stmt_Dash if_stmt_dash_function() {
 
-        if(tokens.peek()!=null){
-            if(tokens.peek().getValue().equals("else")){
+        if (tokens.peek() != null) {
+            if (tokens.peek().getValue().equals("else")) {
                 If_Stmt_Dash if_stmt_dash = new If_Stmt_Dash();
-                if_stmt_dash.Else=tokens.poll();
+                if_stmt_dash.Else = tokens.poll();
                 Stmt stmt = stmt_function();
-                if(stmt!=null){
+                if (stmt != null) {
                     if_stmt_dash.stmt = stmt;
                     return if_stmt_dash;
                 }
@@ -569,7 +626,8 @@ public class Parser {
                         return local_decal;
                     }
                 } else {
-                    System.out.println("Error: can't resolve '" + tokens.peek().getValue() + "'");
+                    System.out.println("Error607: can't resolve '" + tokens.peek().getValue() + "'");
+                    System.exit(0);
                 }
 
             }
@@ -602,17 +660,22 @@ public class Parser {
 
                     } else {
 
-                        System.out.println("Error: ; is missing");
+                        System.out.println("Error641: ; is missing");
+                        System.exit(0);
                     }
                 } else {
 
-                    System.out.println("Error: ] is missing");
+                    System.out.println("Error646: ] is missing");
+                    System.exit(0);
                 }
 
             } else {
-                System.out.println("Error: ; is missing");
+                System.out.println("Error651: ; is missing");
+                System.exit(0);
             }
         }
+        System.out.println("Error655: ; is missing");
+        System.exit(0);
         return null;
 
     }
@@ -670,18 +733,30 @@ public class Parser {
                 Token type_spec = type_spec_function();
                 if (type_spec != null) {
                     expr5.type_spec = type_spec;
-                    if (tokens.peek() != null && tokens.peek().getValue().equals("(")) {
+                    if (tokens.peek() != null && tokens.peek().getValue().equals("[")) {
                         expr5.LB = tokens.poll();
                         Expr expr = expr_function();
                         if (expr != null) {
                             expr5.expr = expr;
-                            if (tokens.peek() != null && tokens.peek().getValue().equals(")")) {
+                            if (tokens.peek() != null && tokens.peek().getValue().equals("]")) {
                                 expr5.RB = tokens.poll();
                                 expr5.expr_q_dash = expr_q_dash_function();
                                 return expr5;
+                            } else {
+                                System.out.println("Error724: ] is missing");
+                                System.exit(0);
                             }
+                        } else {
+                            System.out.println("Error728: expression can't be empty");
+                            System.exit(0);
                         }
+                    } else {
+                        System.out.println("Error732: [ is missing");
+                        System.exit(0);
                     }
+                } else {
+                    System.out.println("Error736: can't resolve '"+token.getValue()+"'");
+                    System.exit(0);
                 }
                 return null;
             }
@@ -697,8 +772,14 @@ public class Parser {
             Expr_S_Dash expr_s_dash = new Expr_S_Dash();
             if (tokens.peek().getValue().equals("=")) {
                 expr_s_dash.Eq = tokens.poll();
-                expr_s_dash.expr = expr_function();
-                return expr_s_dash;
+                Expr expr = expr_function();
+                if(expr!=null) {
+                    expr_s_dash.expr = expr_function();
+                    return expr_s_dash;
+                } else {
+                    System.out.println("Error758: expression can't be empty");
+                    System.exit(0);
+                }
             }
         }
 
@@ -719,9 +800,15 @@ public class Parser {
                         expr_d_dash1.RB = tokens.poll();
                         expr_d_dash1.expr_s_dash = expr_s_dash_function();
                         return expr_d_dash1;
+                    } else {
+                        System.out.println("Error782: ] is missing");
+                        System.exit(0);
                     }
 
                     return null;
+                } else {
+                    System.out.println("Error788: expression can't be empty");
+                    System.exit(0);
                 }
             }
 
@@ -746,6 +833,9 @@ public class Parser {
                 if (tokens.peek() != null && tokens.peek().getValue().equals(")")) {
                     expr_d_dash3.RS = tokens.poll();
                     return expr_d_dash3;
+                } else {
+                    System.out.println("Error815: ) is missing");
+                    System.exit(0);
                 }
 
                 return null;
@@ -757,6 +847,9 @@ public class Parser {
                 if (tokens.peek() != null && tokens.peek().getValue().equals("size")) {
                     expr_d_dash4.size = tokens.poll();
                     return expr_d_dash4;
+                } else {
+                    System.out.println("Error829: function is missing");
+                    System.exit(0);
                 }
 
                 return null;
@@ -791,6 +884,9 @@ public class Parser {
                 if (expr != null) {
                     expr_t_dash.expr = expr;
                     return expr_t_dash;
+                } else {
+                    System.out.println("Error866: expression can't be empty");
+                    System.exit(0);
                 }
             }
         }
@@ -824,14 +920,14 @@ public class Parser {
         return null;
     }
 
-    private Args_List args_list_function(){
+    private Args_List args_list_function() {
 
-        if(tokens.peek()!=null){
+        if (tokens.peek() != null) {
             Args_List args_list = new Args_List();
             Expr expr = expr_function();
-            if(expr!=null){
-                args_list.expr=expr;
-                args_list.args_list_dash=args_list_dash_function();
+            if (expr != null) {
+                args_list.expr = expr;
+                args_list.args_list_dash = args_list_dash_function();
                 return args_list;
             }
         }
@@ -839,17 +935,20 @@ public class Parser {
         return null;
     }
 
-    private Args_List_Dash args_list_dash_function(){
+    private Args_List_Dash args_list_dash_function() {
 
-        if(tokens.peek()!=null){
-            if(tokens.peek().getValue().equals(",")){
+        if (tokens.peek() != null) {
+            if (tokens.peek().getValue().equals(",")) {
                 Args_List_Dash args_list_dash = new Args_List_Dash();
-                args_list_dash.comma=tokens.poll();
+                args_list_dash.comma = tokens.poll();
                 Expr expr = expr_function();
-                if(expr!=null){
-                    args_list_dash.expr=expr;
-                    args_list_dash.args_list_dash=args_list_dash_function();
+                if (expr != null) {
+                    args_list_dash.expr = expr;
+                    args_list_dash.args_list_dash = args_list_dash_function();
                     return args_list_dash;
+                } else {
+                    System.out.println("Error928: arguments is missing");
+                    System.exit(0);
                 }
             }
         }
@@ -857,12 +956,6 @@ public class Parser {
         return null;
 
     }
-
-
-
-
-
-
 
 
 }
