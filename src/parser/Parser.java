@@ -1,5 +1,6 @@
 package parser;
 
+import com.sun.org.apache.xpath.internal.Arg;
 import lexer.Token;
 import parser.rules.*;
 
@@ -18,7 +19,7 @@ public class Parser {
         Program program = program_function();
     }
 
-    public Program program_function() {
+    private Program program_function() {
 
         if (tokens.peek() != null) {
             Decl_List decl_list = decl_list_function();
@@ -34,7 +35,7 @@ public class Parser {
         return null;
     }
 
-    public Decl_List decl_list_function() {
+    private Decl_List decl_list_function() {
 
         if (tokens.peek() != null) {
             Decl_List decl_list = new Decl_List();
@@ -52,7 +53,7 @@ public class Parser {
 
     }
 
-    public Decl_List_Dash decl_list_dash_function() {
+    private Decl_List_Dash decl_list_dash_function() {
         if (tokens.peek() != null) {
             Decl_List_Dash decl_list_dash = new Decl_List_Dash();
             Decl decl = decl_function();
@@ -66,59 +67,68 @@ public class Parser {
         return null;
     }
 
-    public Decl decl_function() {
+    private Decl decl_function() {
         if (tokens.peek() != null) {
 
-            Var_Decl var_decl = var_decl_function();
+            Token type_spec = type_spec_function();
+            Token id;
+            if (type_spec != null) {
+                if (tokens.peek() != null && tokens.peek().getType().equals("ID")) {
+                    id = tokens.poll();
+                } else {
+                    System.out.println("Error: can't resolve '" + tokens.peek().getValue() + "'");
+                    return null;
+                }
+            } else {
+                System.out.println("Error: can't resolve '" + tokens.peek().getValue() + "'");
+                return null;
+            }
 
-            if (var_decl != null) {
+            if (tokens.peek() != null && !tokens.peek().getValue().equals("(")) {
+                Var_Decl var_decl = var_decl_function();
+                if (var_decl != null) {
+                    var_decl.type_spec = type_spec;
+                    var_decl.id = id;
+                    return var_decl;
+                }
+            }
+
+            if (tokens.peek() != null && tokens.peek().getValue().equals("(")) {
+
+                Fun_Decl fun_decl = fun_decl_function();
+                if (fun_decl != null) {
+                    fun_decl.type_spec = type_spec;
+                    fun_decl.id = id;
+                    return fun_decl;
+                }
+
+            }
+
+            System.out.println("Error: ; is missing");
+
+
+        }
+
+
+        return null;
+
+    }
+
+    private Var_Decl var_decl_function() {
+        if (tokens.peek() != null) {
+            Var_Decl var_decl = new Var_Decl();
+            Var_Decl_Dash var_decl_dash = var_decl_dash_function();
+            if (var_decl_dash != null) {
+                var_decl.var_decl_dash = var_decl_dash;
                 return var_decl;
             }
 
-            Fun_Decl fun_decl = fun_decl_function();
-
-            return fun_decl;
-
-        }
-
-        return null;
-
-    }
-
-    public Var_Decl var_decl_function() {
-        if (tokens.peek() != null) {
-            Var_Decl var_decl = new Var_Decl();
-            Token type_spec = type_spec_function();
-            if (type_spec != null) {
-                var_decl.type_spec = type_spec;
-                if (tokens.peek() != null && tokens.peek().getType().equals("ID")) {
-                    var_decl.id = tokens.poll();
-                    Var_Decl_Dash var_decl_dash = var_decl_dash_function();
-                    if (var_decl_dash != null) {
-                        var_decl.var_decl_dash = var_decl_dash;
-                        return var_decl;
-                    } else if (tokens.peek() == null || !tokens.peek().getValue().equals("(")) {
-                        System.out.println("Error: ; is missing");
-                    }
-
-                } else {
-                    System.out.println("Error: can't resolve '" + tokens.peek().getValue() + "'");
-                }
-
-            } else {
-                System.out.println("Error: can't resolve '" + tokens.peek().getValue() + "'");
-            }
-            if (var_decl.id != null)
-                tokens.addFirst(var_decl.id);
-            if (var_decl.type_spec != null)
-                tokens.addFirst(var_decl.type_spec);
-
         }
         return null;
 
     }
 
-    public Var_Decl_Dash var_decl_dash_function() {
+    private Var_Decl_Dash var_decl_dash_function() {
         if (tokens.peek() != null) {
             if (tokens.peek().getValue().equals(";")) {
                 Var_Decl_Dash1 var_decl_dash1 = new Var_Decl_Dash1();
@@ -139,22 +149,22 @@ public class Parser {
                     } else {
 
                         System.out.println("Error: ; is missing");
+
                     }
                 } else {
 
                     System.out.println("Error: ] is missing");
                 }
-                if (var_decl_dash2.RB != null)
-                    tokens.addFirst(var_decl_dash2.RB);
-                if (var_decl_dash2.LB != null)
-                    tokens.addFirst(var_decl_dash2.LB);
 
+            } else {
+                System.out.println("Error: ; is missing");
             }
         }
+        System.exit(0);
         return null;
     }
 
-    public Token type_spec_function() {
+    private Token type_spec_function() {
         if (tokens.peek() != null) {
             if (tokens.peek().getType().equals("VOID") ||
                     tokens.peek().getType().equals("BOOL") ||
@@ -167,55 +177,25 @@ public class Parser {
 
     }
 
-    public Fun_Decl fun_decl_function() {
+    private Fun_Decl fun_decl_function() {
         if (tokens.peek() != null) {
             Fun_Decl fun_decl = new Fun_Decl();
-            Token type_spec = type_spec_function();
 
-            if (type_spec != null) {
-
-                fun_decl.type_spec = type_spec;
-
-                if (tokens.peek() != null && tokens.peek().getType().equals("ID")) {
-                    fun_decl.id = tokens.poll();
-                    if (tokens.peek() != null && tokens.peek().getValue().equals("(")) {
-                        fun_decl.LB = tokens.poll();
-                        Params params = params_function();
-                        if (params != null) {
-                            fun_decl.params = params;
-                        }
-                        if (tokens.peek() != null && tokens.peek().getValue().equals(")")) {
-                            fun_decl.RB = tokens.poll();
-                            Compound_Stmt compound_stmt = compound_stmt_function();
-                            if (compound_stmt != null) {
-                                fun_decl.compound_stmt = compound_stmt;
-                                return fun_decl;
-                            }
-                        } else {
-
-                            if (tokens.peek() != null)
-                                System.out.println("Error: can't resolve '" + tokens.peek().getValue() + "'");
-                            else
-                                System.out.println("Error: ) is missing");
-                        }
-
-                    } else {
-
-                    }
-                } else {
-
-
+            if (tokens.peek() != null && tokens.peek().getValue().equals("(")) {
+                fun_decl.LB = tokens.poll();
+                Params params = params_function();
+                if (params != null) {
+                    fun_decl.params = params;
                 }
-
+                if (tokens.peek() != null && tokens.peek().getValue().equals(")")) {
+                    fun_decl.RB = tokens.poll();
+                    Compound_Stmt compound_stmt = compound_stmt_function();
+                    if (compound_stmt != null) {
+                        fun_decl.compound_stmt = compound_stmt;
+                        return fun_decl;
+                    }
+                }
             }
-            if (fun_decl.RB != null)
-                tokens.addFirst(fun_decl.RB);
-            if (fun_decl.LB != null)
-                tokens.addFirst(fun_decl.LB);
-            if (fun_decl.id != null)
-                tokens.addFirst(fun_decl.id);
-            if (fun_decl.type_spec != null)
-                tokens.addFirst(fun_decl.type_spec);
 
 
         }
@@ -223,7 +203,7 @@ public class Parser {
         return null;
     }
 
-    public Params params_function() {
+    private Params params_function() {
         if (tokens.peek() != null) {
             Param_List param_list = param_list_function();
             if (param_list != null) {
@@ -243,7 +223,7 @@ public class Parser {
         return null;
     }
 
-    public Param_List param_list_function() {
+    private Param_List param_list_function() {
         if (tokens.peek() != null) {
             Param param = param_function();
             if (param != null) {
@@ -258,7 +238,7 @@ public class Parser {
 
     }
 
-    public Param_List_Dash param_list_dash_function() {
+    private Param_List_Dash param_list_dash_function() {
         if (tokens.peek() != null) {
             Param_List_Dash param_list_dash = new Param_List_Dash();
             if (tokens.peek().getValue().equals(",")) {
@@ -270,15 +250,14 @@ public class Parser {
                     return param_list_dash;
                 }
             }
-            if (param_list_dash.comma != null)
-                tokens.addFirst(param_list_dash.comma);
+
         }
 
         return null;
 
     }
 
-    public Param param_function() {
+    private Param param_function() {
 
         if (tokens.peek() != null) {
 
@@ -294,8 +273,6 @@ public class Parser {
                 }
 
             }
-            if (param.type_spec != null)
-                tokens.addFirst(param.type_spec);
 
 
         }
@@ -304,7 +281,7 @@ public class Parser {
 
     }
 
-    public Param_Dash param_dash_function() {
+    private Param_Dash param_dash_function() {
 
         if (tokens.peek() != null) {
             Param_Dash param_dash = new Param_Dash();
@@ -317,15 +294,165 @@ public class Parser {
                     System.out.println("Error: ] is missing");
                 }
             }
-            if (param_dash.LS != null)
-                tokens.addFirst(param_dash.LS);
+
         }
 
         return null;
 
     }
 
-    public Compound_Stmt compound_stmt_function() {
+    public Stmt_List stmt_list_function(){
+        if(tokens.peek()!=null){
+            Stmt_List stmt_list = new Stmt_List();
+            stmt_list.stmt_list_dash = stmt_list_dash_function();
+            return stmt_list;
+        }
+
+        return null;
+    }
+
+    public Stmt_List_Dash stmt_list_dash_function(){
+        if (tokens.peek()!=null){
+            Stmt_List_Dash stmt_list_dash = new Stmt_List_Dash();
+            Stmt stmt = stmt_function();
+            if(stmt!=null){
+                stmt_list_dash.stmt = stmt;
+                stmt_list_dash.stmt_list_dash= stmt_list_dash_function();
+                return stmt_list_dash;
+            }
+        }
+
+        return null;
+
+    }
+
+    public Stmt stmt_function(){
+
+        if(tokens.peek()!=null){
+            if(tokens.peek().getValue().equals("{")){
+                return compound_stmt_function();
+            }
+
+            if(tokens.peek().getValue().equals("if")){
+
+                return if_stmt_function();
+            }
+
+            if(tokens.peek().getValue().equals("while")){
+                return while_stmt_function();
+            }
+
+            if(tokens.peek().getValue().equals("return")){
+                return return_stmt_function();
+            }
+
+            if(tokens.peek().getValue().equals("break")){
+                Break_Stmt break_stmt = new Break_Stmt();
+                break_stmt.Break=tokens.poll();
+                return break_stmt;
+            }
+
+            return expr_stmt_function();
+        }
+
+        return null;
+
+    }
+
+    public Return_Stmt return_stmt_function(){
+
+        if(tokens.peek()!=null){
+            if(tokens.peek().getValue().equals("return")){
+                Return_Stmt return_stmt = new Return_Stmt();
+                return_stmt.Return=tokens.poll();
+                Return_Stmt_Dash return_stmt_dash = return_stmt_dash_function();
+                if(return_stmt_dash!=null){
+                    return_stmt.return_stmt_dash = return_stmt_dash;
+                    return return_stmt;
+                }
+            }
+        }
+
+        return null;
+
+    }
+
+    public Return_Stmt_Dash return_stmt_dash_function(){
+
+        if(tokens.peek()!=null){
+            if(tokens.peek().getValue().equals(";")){
+                Return_Stmt_Dash1 return_stmt_dash1 = new Return_Stmt_Dash1();
+                return_stmt_dash1.simicolon=tokens.poll();
+                return return_stmt_dash1;
+            } else {
+                Expr expr = expr_function();
+                Return_Stmt_Dash2 return_stmt_dash2 = new Return_Stmt_Dash2();
+                if(expr!=null){
+                    return_stmt_dash2.expr=expr;
+                    if(tokens.peek()!=null&&tokens.peek().getValue().equals(";")){
+                        return_stmt_dash2.simicolon=tokens.poll();
+                        return return_stmt_dash2;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public Expr_Stmt expr_stmt_function(){
+
+        if(tokens.peek()!=null){
+            if(tokens.peek().getValue().equals(";")){
+                Expr_Stmt2 expr_stmt2 = new Expr_Stmt2();
+                expr_stmt2.simicolon=tokens.poll();
+                return expr_stmt2;
+            } else {
+                Expr expr = expr_function();
+                Expr_Stmt1 expr_stmt1 = new Expr_Stmt1();
+                if(expr!=null){
+                    expr_stmt1.expr=expr;
+                    if(tokens.peek()!=null&&tokens.peek().getValue().equals(";")){
+                        expr_stmt1.simicolon=tokens.poll();
+                        return expr_stmt1;
+                    }
+                }
+            }
+        }
+
+        return null;
+
+    }
+
+    public While_Stmt while_stmt_function(){
+
+        if(tokens.peek()!=null){
+            if(tokens.peek().getValue().equals("while")){
+                While_Stmt while_stmt = new While_Stmt();
+                while_stmt.While=tokens.poll();
+                if(tokens.peek()!=null&&tokens.peek().getValue().equals("(")){
+                    while_stmt.LS=tokens.poll();
+                    Expr expr = expr_function();
+                    if(expr!=null){
+                        while_stmt.expr=expr;
+                        if(tokens.peek()!=null&&tokens.peek().getValue().equals(")")){
+                            while_stmt.RS=tokens.poll();
+                            Stmt stmt = stmt_function();
+                            if(stmt!=null){
+                                while_stmt.stmt=stmt;
+                                return while_stmt;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
+
+    }
+
+    private Compound_Stmt compound_stmt_function() {
         if (tokens.peek() != null) {
 
             Compound_Stmt compound_stmt = new Compound_Stmt();
@@ -335,6 +462,7 @@ public class Parser {
                 compound_stmt.LC = tokens.poll();
 
                 compound_stmt.local_decals = local_decals_function();
+                compound_stmt.stmt_list = stmt_list_function();
 
                 if (tokens.peek() != null && tokens.peek().getValue().equals("}")) {
                     compound_stmt.RC = tokens.poll();
@@ -342,8 +470,7 @@ public class Parser {
 
                 }
             }
-            if (compound_stmt.LC != null)
-                tokens.addFirst(compound_stmt.LC);
+
 
         } else {
 
@@ -353,7 +480,53 @@ public class Parser {
         return null;
     }
 
-    public Local_Decals local_decals_function() {
+    private If_Stmt if_stmt_function(){
+        if(tokens.peek()!=null){
+            if(tokens.peek().getValue().equals("if")){
+                If_Stmt if_stmt =new If_Stmt();
+                if_stmt.If=tokens.poll();
+                if(tokens.peek()!=null&&tokens.peek().getValue().equals("(")){
+                    if_stmt.LS=tokens.poll();
+                    Expr expr = expr_function();
+                    if(expr!=null){
+                        if_stmt.expr=expr;
+                        if(tokens.peek()!=null&&tokens.peek().getValue().equals(")")){
+                            if_stmt.RS=tokens.poll();
+                            Stmt stmt = stmt_function();
+                            if(stmt!=null){
+                                if_stmt.stmt=stmt;
+                                if_stmt.if_stmt_dash=if_stmt_dash_function();
+                                return if_stmt;
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private If_Stmt_Dash if_stmt_dash_function(){
+
+        if(tokens.peek()!=null){
+            if(tokens.peek().getValue().equals("else")){
+                If_Stmt_Dash if_stmt_dash = new If_Stmt_Dash();
+                if_stmt_dash.Else=tokens.poll();
+                Stmt stmt = stmt_function();
+                if(stmt!=null){
+                    if_stmt_dash.stmt = stmt;
+                    return if_stmt_dash;
+                }
+            }
+        }
+
+        return null;
+
+    }
+
+    private Local_Decals local_decals_function() {
 
         if (tokens.peek() != null) {
             Local_Decals local_decals = new Local_Decals();
@@ -365,7 +538,7 @@ public class Parser {
 
     }
 
-    public Local_Decals_Dash local_decals_dash_function() {
+    private Local_Decals_Dash local_decals_dash_function() {
 
         if (tokens.peek() != null) {
             Local_Decals_Dash local_decals_dash = new Local_Decals_Dash();
@@ -381,7 +554,7 @@ public class Parser {
 
     }
 
-    public Local_Decal local_decal_function() {
+    private Local_Decal local_decal_function() {
 
         if (tokens.peek() != null) {
             Token type_spec = type_spec_function();
@@ -401,10 +574,6 @@ public class Parser {
 
             }
 
-            if (local_decal.id != null)
-                tokens.addFirst(local_decal.id);
-            if (local_decal.type_spec != null)
-                tokens.addFirst(local_decal.type_spec);
         }
 
 
@@ -412,7 +581,7 @@ public class Parser {
 
     }
 
-    public Local_Decal_Dash local_decal_dash_function() {
+    private Local_Decal_Dash local_decal_dash_function() {
 
         if (tokens.peek() != null) {
             if (tokens.peek().getValue().equals(";")) {
@@ -439,10 +608,6 @@ public class Parser {
 
                     System.out.println("Error: ] is missing");
                 }
-                if (local_decal_dash2.RB != null)
-                    tokens.addFirst(local_decal_dash2.RB);
-                if (local_decal_dash2.LB != null)
-                    tokens.addFirst(local_decal_dash2.LB);
 
             } else {
                 System.out.println("Error: ; is missing");
@@ -452,67 +617,67 @@ public class Parser {
 
     }
 
-    public Expr expr_function() {
+    private Expr expr_function() {
 
-        if(tokens.peek()!=null){
+        if (tokens.peek() != null) {
             Token token = tokens.peek();
 
-            if(token.getType().equals("ID")){
+            if (token.getType().equals("ID")) {
                 Expr1 expr1 = new Expr1();
-                expr1.id=tokens.poll();
-                expr1.expr_d_dash=expr_d_dash_function();
-                expr1.expr_q_dash=expr_q_dash_function();
+                expr1.id = tokens.poll();
+                expr1.expr_d_dash = expr_d_dash_function();
+                expr1.expr_q_dash = expr_q_dash_function();
                 return expr1;
             }
 
-            if(token.getValue().equals("!")||token.getValue().equals("-")||token.getValue().equals("+")){
+            if (token.getValue().equals("!") || token.getValue().equals("-") || token.getValue().equals("+")) {
                 Expr2 expr2 = new Expr2();
-                expr2.op=tokens.poll();
-                expr2.expr_q_dash=expr_q_dash_function();
+                expr2.op = tokens.poll();
+                expr2.expr_q_dash = expr_q_dash_function();
                 return expr2;
             }
 
-            if(token.getValue().equals("(")){
+            if (token.getValue().equals("(")) {
                 Expr3 expr3 = new Expr3();
-                expr3.LS=tokens.poll();
+                expr3.LS = tokens.poll();
                 Expr expr = expr_function();
-                if(expr!=null){
-                    expr3.expr=expr;
-                    if(tokens.peek()!=null&&tokens.peek().getValue().equals(")")){
-                        expr3.RS=tokens.poll();
-                        expr3.expr_q_dash=expr_q_dash_function();
+                if (expr != null) {
+                    expr3.expr = expr;
+                    if (tokens.peek() != null && tokens.peek().getValue().equals(")")) {
+                        expr3.RS = tokens.poll();
+                        expr3.expr_q_dash = expr_q_dash_function();
                         return expr3;
                     }
                 }
                 return null;
             }
 
-            if(token.getType().equals("INTEGRAL_LITERAL")||
-                    token.getType().equals("FlOAT_LITERAL")||
-                    token.getType().equals("CHAT_LITERAL")||
-                    token.getType().equals("STRING_LITERAL")||
-                    token.getType().equals("BOOL_LITERAL")){
+            if (token.getType().equals("INTEGRAL_LITERAL") ||
+                    token.getType().equals("FlOAT_LITERAL") ||
+                    token.getType().equals("CHAT_LITERAL") ||
+                    token.getType().equals("STRING_LITERAL") ||
+                    token.getType().equals("BOOL_LITERAL")) {
                 Expr4 expr4 = new Expr4();
-                expr4.literal=tokens.poll();
-                expr4.expr_q_dash=expr_q_dash_function();
+                expr4.literal = tokens.poll();
+                expr4.expr_q_dash = expr_q_dash_function();
                 return expr4;
 
             }
 
-            if(token.getValue().equals("new")){
+            if (token.getValue().equals("new")) {
                 Expr5 expr5 = new Expr5();
-                expr5.New=tokens.poll();
+                expr5.New = tokens.poll();
                 Token type_spec = type_spec_function();
-                if(type_spec!=null){
-                    expr5.type_spec=type_spec;
-                    if(tokens.peek()!=null&&tokens.peek().getValue().equals("(")){
-                        expr5.LB=tokens.poll();
+                if (type_spec != null) {
+                    expr5.type_spec = type_spec;
+                    if (tokens.peek() != null && tokens.peek().getValue().equals("(")) {
+                        expr5.LB = tokens.poll();
                         Expr expr = expr_function();
-                        if(expr!=null){
-                            expr5.expr=expr;
-                            if(tokens.peek()!=null&&tokens.peek().getValue().equals(")")){
-                                expr5.RB=tokens.poll();
-                                expr5.expr_q_dash=expr_q_dash_function();
+                        if (expr != null) {
+                            expr5.expr = expr;
+                            if (tokens.peek() != null && tokens.peek().getValue().equals(")")) {
+                                expr5.RB = tokens.poll();
+                                expr5.expr_q_dash = expr_q_dash_function();
                                 return expr5;
                             }
                         }
@@ -526,7 +691,7 @@ public class Parser {
 
     }
 
-    public Expr_S_Dash expr_s_dash_function() {
+    private Expr_S_Dash expr_s_dash_function() {
 
         if (tokens.peek() != null) {
             Expr_S_Dash expr_s_dash = new Expr_S_Dash();
@@ -540,7 +705,7 @@ public class Parser {
         return null;
     }
 
-    public Expr_D_Dash expr_d_dash_function() {
+    private Expr_D_Dash expr_d_dash_function() {
 
         if (tokens.peek() != null) {
             Token token = tokens.peek();
@@ -550,7 +715,7 @@ public class Parser {
                 Expr expr = expr_function();
                 if (expr != null) {
                     expr_d_dash1.expr = expr;
-                    if (tokens.peek() != null&&tokens.peek().getValue().equals("]")) {
+                    if (tokens.peek() != null && tokens.peek().getValue().equals("]")) {
                         expr_d_dash1.RB = tokens.poll();
                         expr_d_dash1.expr_s_dash = expr_s_dash_function();
                         return expr_d_dash1;
@@ -586,11 +751,11 @@ public class Parser {
                 return null;
             }
 
-            if(token.getValue().equals(".")){
+            if (token.getValue().equals(".")) {
                 Expr_D_Dash4 expr_d_dash4 = new Expr_D_Dash4();
-                expr_d_dash4.dot=tokens.poll();
-                if(tokens.peek()!=null&&tokens.peek().getValue().equals("size")){
-                    expr_d_dash4.size=tokens.poll();
+                expr_d_dash4.dot = tokens.poll();
+                if (tokens.peek() != null && tokens.peek().getValue().equals("size")) {
+                    expr_d_dash4.size = tokens.poll();
                     return expr_d_dash4;
                 }
 
@@ -603,7 +768,7 @@ public class Parser {
 
     }
 
-    public Expr_T_Dash expr_t_dash_function() {
+    private Expr_T_Dash expr_t_dash_function() {
 
         if (tokens.peek() != null) {
             Token token = tokens.peek();
@@ -634,7 +799,7 @@ public class Parser {
 
     }
 
-    public Expr_Q_Dash expr_q_dash_function() {
+    private Expr_Q_Dash expr_q_dash_function() {
 
         if (tokens.peek() != null) {
             Expr_Q_Dash expr_q_dash = new Expr_Q_Dash();
@@ -648,14 +813,56 @@ public class Parser {
         return null;
     }
 
-    public Args args_function() {
+    private Args args_function() {
 
-        if(tokens.peek()!=null){
-
+        if (tokens.peek() != null) {
+            Args args = new Args();
+            args.args_list = args_list_function();
+            return args;
         }
 
         return null;
     }
+
+    private Args_List args_list_function(){
+
+        if(tokens.peek()!=null){
+            Args_List args_list = new Args_List();
+            Expr expr = expr_function();
+            if(expr!=null){
+                args_list.expr=expr;
+                args_list.args_list_dash=args_list_dash_function();
+                return args_list;
+            }
+        }
+
+        return null;
+    }
+
+    private Args_List_Dash args_list_dash_function(){
+
+        if(tokens.peek()!=null){
+            if(tokens.peek().getValue().equals(",")){
+                Args_List_Dash args_list_dash = new Args_List_Dash();
+                args_list_dash.comma=tokens.poll();
+                Expr expr = expr_function();
+                if(expr!=null){
+                    args_list_dash.expr=expr;
+                    args_list_dash.args_list_dash=args_list_dash_function();
+                    return args_list_dash;
+                }
+            }
+        }
+
+        return null;
+
+    }
+
+
+
+
+
+
 
 
 }

@@ -1,5 +1,14 @@
 int x;
-int y(int l,int h){
-    int o[];
-    int y;
+int y(int l){
+    int fly;
+    fly=5+10;
+    fly=5+x;
+    if(x==5&&(fly==x)){
+      int h;
+      h=0;
+    } else {
+       int h;
+       h=5;
+
+    }
 }
