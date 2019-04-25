@@ -15,8 +15,9 @@ public class Parser {
 
     }
 
-    public void parse() {
+    public Program parse() {
         Program program = program_function();
+        return  program;
     }
 
     private Program program_function() {
@@ -86,7 +87,6 @@ public class Parser {
                 System.exit(0);
                 return null;
             }
-
             if (tokens.peek() != null && !tokens.peek().getValue().equals("(")) {
                 Var_Decl var_decl = var_decl_function();
                 if (var_decl != null) {
@@ -376,6 +376,13 @@ public class Parser {
 
             }
 
+            Local_Decals local_decals = local_decals_function();
+
+            if(local_decals!=null){
+                return local_decals;
+            }
+
+
             Expr_Stmt expr_stmt = expr_stmt_function();
             if(expr_stmt!=null){
                 return expr_stmt;
@@ -506,14 +513,16 @@ public class Parser {
 
                 compound_stmt.LC = tokens.poll();
 
-                compound_stmt.local_decals = local_decals_function();
+                //compound_stmt.local_decals = local_decals_function();
+
                 compound_stmt.stmt_list = stmt_list_function();
+
                 if (tokens.peek() != null && tokens.peek().getValue().equals("}")) {
                     compound_stmt.RC = tokens.poll();
                     return compound_stmt;
 
                 } else {
-                    System.out.println("Error498: } is missing");
+                    System.out.println("Error498: can't resolve '"+tokens.peek().getValue()+"'");
                     System.exit(0);
                 }
             }
@@ -587,8 +596,12 @@ public class Parser {
 
         if (tokens.peek() != null) {
             Local_Decals local_decals = new Local_Decals();
-            local_decals.local_decals_dash = local_decals_dash_function();
-            return local_decals;
+            Local_Decals_Dash local_decals_dash = local_decals_dash_function();
+            if(local_decals_dash!=null){
+                local_decals.local_decals_dash=local_decals_dash;
+                return local_decals;
+            }
+
         }
 
         return null;

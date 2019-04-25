@@ -8,8 +8,9 @@ public class Var_Decl_Dash1 implements Var_Decl_Dash{
     @Override
     public void printNode() {
 
-        System.out.println("Var_Decl_Dash: ");
-        System.out.println("Simicolon: "+simicolon.getValue());
+        System.out.println("Var_Decl_Dash");
+        System.out.println("Terminals: "+simicolon.getValue());
+        System.out.println();
 
 
     }

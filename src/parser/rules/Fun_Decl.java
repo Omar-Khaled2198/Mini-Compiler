@@ -13,6 +13,16 @@ public class Fun_Decl implements Decl{
 
     @Override
     public void printNode() {
-
+        System.out.println("Fun_Decl");
+        System.out.println("Terminals: "+type_spec.getValue()+", "+id.getValue()+", "+
+                LB.getValue()+", "+RB.getValue());
+        System.out.println();
+        if(params!=null){
+            params.printNode();
+            System.out.println();
+        }
+//        if(compound_stmt!=null){
+//            compound_stmt.printNode();
+//        }
     }
 }

@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+
+<title>Tree Diagram</title>
+
+<link rel="stylesheet" href="css/vtree.css" type="text/css"/>
+
+<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="dist/vtree.js"></script>
+
+<script type="text/javascript">
+var vt;
+
+window.onload = function () {
+  var container = document.getElementById("container");
+  vt = new VTree(container);
+  var reader = new VTree.reader.Object();
+
+  function updateTree() {
+    var s = '{"decl_list":{"decl":{"type_spec":{"Value":"int"},"id":{"Value":"mainn"},"LB":{"Value":"("},"params":{"param_list":{"param":{"type_spec":{"Value":"int"},"id":{"Value":"a"}},"param_list_dash":{"comma":{"Value":","},"param":{"type_spec":{"Value":"int"},"id":{"Value":"b"}}}}},"RB":{"Value":")"},"compound_stmt":{"LC":{"Value":"{"},"stmt_list":{"stmt_list_dash":{"stmt":{"local_decals_dash":{"local_decal":{"type_spec":{"Value":"int"},"id":{"Value":"sum"},"local_decal_dash":{"simicolon":{"Value":";"}}}}},"stmt_list_dash":{"stmt":{"expr":{"id":{"Value":"sum"},"expr_d_dash":{"Eq":{"Value":"\u003d"},"expr":{"id":{"Value":"a"},"expr_q_dash":{"expr_t_dash":{"op":{"Value":"+"},"expr":{"id":{"Value":"b"}}}}}}},"simicolon":{"Value":";"}},"stmt_list_dash":{"stmt":{"local_decals_dash":{"local_decal":{"type_spec":{"Value":"int"},"id":{"Value":"mult"},"local_decal_dash":{"simicolon":{"Value":";"}}}}},"stmt_list_dash":{"stmt":{"expr":{"id":{"Value":"mult"},"expr_d_dash":{"Eq":{"Value":"\u003d"},"expr":{"id":{"Value":"sum"},"expr_q_dash":{"expr_t_dash":{"op":{"Value":"*"},"expr":{"literal":{"Value":"2"}}}}}}},"simicolon":{"Value":";"}}}}}}},"RC":{"Value":"}"}}}}}';
+    var jsonData = JSON.parse(s);
+
+
+    var data = reader.read(jsonData);
+
+    vt.data(data)
+      .update();
+  }
+
+  function createSvgString() {
+    document.getElementById("svg-text").value = vt.createSvgString();
+  }
+
+  updateTree();
+};
+
+</script>
+
+</head>
+
+<body>
+  <div class="container">
+    <div id="container"></div>
+  </div>
+</body>
+
+</html>

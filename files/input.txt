@@ -1,28 +1,6 @@
-int x;
-int y(){
-
-    if(x==5){
-        int x;
-        x=10;
-    }
-
-    while(true){
-        int omar;
-        if(omar==5){
-            String bird;
-            bird="omar";
-            if(bird=="omar"){
-                omar[n]='a';
-                return "fuck";
-            } else {
-                return "fuck2";
-                break;
-
-            }
-        }
-    }
-}
-
-int l(int x){
-    return;
+int mainn(int a,int b){
+    int sum;
+    sum=a+b;
+    int mult;
+    mult= sum* 2;
 }

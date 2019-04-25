@@ -2,10 +2,10 @@ package lexer;
 
 public class Token implements Comparable<Token> {
 
-	private String Type;
+	private transient String Type;
 	private String Value;
-	private int Start;
-	private int End;
+	private transient int Start;
+	private transient int End;
 
 	public Token(String type, String value, int start, int end) {
 		this.Type = type;
