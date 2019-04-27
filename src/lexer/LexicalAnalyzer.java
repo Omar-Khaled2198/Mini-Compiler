@@ -66,6 +66,7 @@ public class LexicalAnalyzer {
 				Matcher matcher = pattern.matcher(code.substring(tokens.get(i).getEnd(), tokens.get(i+1).getStart()));
 				while (matcher.find()) {
 					System.out.println("Undefined: "+ matcher.group());
+					System.exit(0);
 				}
 			}
 

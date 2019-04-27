@@ -14,7 +14,6 @@ public class Var_Decl implements Decl{
 
         System.out.println("Var_Decl");
         System.out.println("Terminals: "+type_spec.getValue()+", "+id.getValue());
-        System.out.println();
         var_decl_dash.printNode();
         System.out.println();
 

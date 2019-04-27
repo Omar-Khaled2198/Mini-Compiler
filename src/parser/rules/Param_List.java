@@ -9,11 +9,11 @@ public class Param_List {
         System.out.println("Param_List");
         if(param!=null){
             param.printNode();
-            System.out.println();
         }
         if(param_list_dash!=null){
             param_list_dash.printNode();
             System.out.println();
-        }
+        } else
+            System.out.println();
     }
 }

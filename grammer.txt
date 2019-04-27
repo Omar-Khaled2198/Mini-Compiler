@@ -11,7 +11,6 @@ param_list -> param param_list'
 param_list' -> , param param_list' | ϵ
 param -> type_spec IDENT param'
 param' -> [ ] | ϵ
-
 stmt_list -> stmt_list'
 stmt_list' -> stmt stmt_list' | ϵ
 stmt -> expr_stmt | compound_stmt | local_decls |if_stmt | while_stmt | return_stmt | break_stmt
@@ -20,18 +19,13 @@ return_stmt' -> ; | expr ;
 expr_stmt -> expr ; | ;
 while_stmt -> WHILE ( expr ) stmt
 compound_stmt -> { stmt_list }
-
 local_decls -> local_decls'
 local_decls' -> local_decl local_decls' | ϵ
 local_decl -> type_spec IDENT local_decl'
 local_decl' -> ; | [ ] ;
-
-
 if_stmt -> IF ( expr ) stmt if_stmt'
 if_stmt' -> ELSE stmt | ϵ
-
-
-         expr -> IDENT expr2 expr4
+expr -> IDENT expr2 expr4
           | ! expr expr4
           | - expr expr4
           | + expr expr4
@@ -40,14 +34,14 @@ if_stmt' -> ELSE stmt | ϵ
           | INT_LIT expr4
           | FLOAT_LIT expr4
           | NEW type_spec [ expr ] expr4
-   expr1 -> = expr
+expr1 -> = expr
           | ϵ
-  expr2 -> [ expr ] expr1
+expr2 -> [ expr ] expr1
           | = expr
           | ( args )
           | . size
           | ϵ
- expr3 -> OR expr
+expr3 -> OR expr
           | EQ expr
           | NE expr
           | LE expr

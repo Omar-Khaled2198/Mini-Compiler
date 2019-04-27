@@ -11,7 +11,8 @@ public class Params1 implements Params {
         if(param_list!=null){
             param_list.printNode();
             System.out.println();
-        }
+        } else
+            System.out.println();
 
     }
 }

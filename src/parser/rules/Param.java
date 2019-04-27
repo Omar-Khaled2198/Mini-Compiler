@@ -12,10 +12,10 @@ public class Param {
     public void printNode(){
         System.out.println("Param");
         System.out.println("Terminals: "+type_spec.getValue()+", "+id.getValue());
-        System.out.println();
         if(param_dash!=null){
             param_dash.printNode();
             System.out.println();
-        }
+        } else
+            System.out.println();
     }
 }

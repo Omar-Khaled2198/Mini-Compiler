@@ -6,5 +6,10 @@ public class Args {
 
     public void printNode(){
 
+        System.out.println("Args");
+        if(args_list!=null){
+            args_list.printNode();
+            System.out.println();
+        }
     }
 }

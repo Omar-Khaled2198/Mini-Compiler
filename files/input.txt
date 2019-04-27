@@ -1,6 +1,1 @@
-int mainn(int a,int b){
-    int sum;
-    sum=a+b;
-    int mult;
-    mult= sum* 2;
-}
+int x;

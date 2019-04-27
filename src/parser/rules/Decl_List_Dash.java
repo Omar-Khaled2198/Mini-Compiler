@@ -8,11 +8,11 @@ public class Decl_List_Dash {
     public void printNode(){
         System.out.println("Decl_List_Dash");
         decl.printNode();
-        System.out.println();
         if(decl_list_dash!=null){
             decl_list_dash.printNode();
             System.out.println();
-        }
+        } else
+            System.out.println();
 
     }
 }
