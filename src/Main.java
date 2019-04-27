@@ -19,7 +19,7 @@ public class Main {
     public static void main(String[] args) {
 
         FileHandler fileHandler = FileHandler.getInstance();
-        String code = fileHandler.readInput("files/input.txt");
+        String code = fileHandler.readInput("files/input.c");
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(code);
         ArrayList<Token> tokens = lexicalAnalyzer.generateTokens();
         fileHandler.writeOutput(tokens, "files/output.txt");
@@ -28,7 +28,7 @@ public class Main {
         Gson gson = new Gson();
         String programJSON = gson.toJson(program);
         DiagramGenerator diagramGenerator = new DiagramGenerator(programJSON);
-        diagramGenerator.generate();;
+        diagramGenerator.generate();
 
     }
 

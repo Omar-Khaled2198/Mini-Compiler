@@ -16,7 +16,7 @@ UNION \bunion\b
 VOLATILE \bvolatile\b
 IF \bif\b
 ELSE \belse\b
-MAIN \bmain\b
+SIZE \bsize\b
 PRIVATE \bprivate\b
 CLASS \bclass\b
 SINGLE_COMMENT \/\/.+

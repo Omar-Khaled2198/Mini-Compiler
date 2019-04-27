@@ -8,9 +8,15 @@ import java.util.*;
 
 public class Parser {
 
-    public Deque<Token> tokens;
+    public Queue<Token> tokens;
 
     public Parser(ArrayList<Token> tokens) {
+        for(int i=0;i<tokens.size();i++){
+            if(tokens.get(i).getType().equals("SINGLE_COMMENT")||tokens.get(i).getType().equals("MULTI_COMMENT")){
+                tokens.remove(i);
+                i--;
+            }
+        }
         this.tokens = new LinkedList<>(tokens);
 
     }
