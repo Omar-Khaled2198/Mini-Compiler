@@ -1,17 +1,8 @@
-int main(){
-    int y;
-    y=5;
-    int x;
-    x=10;
-    int sum;
-    if(x<y){
-        sum=x-y;
-    } else {
-        sum=y-x;
-    }
-    int total;
-    total=20;
-    while(sum<total){
-        sum++;
-    }
+bool isPowerOfTwo(int x) {
+    /*
+    Try multiline comment
+    */
+	// First x in the below expression is
+	// for the case when x is 0
+	return x && (!(x && (x - 1)));
 }

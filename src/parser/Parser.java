@@ -8,7 +8,7 @@ import java.util.*;
 
 public class Parser {
 
-    public Queue<Token> tokens;
+    private Queue<Token> tokens;
 
     public Parser(ArrayList<Token> tokens) {
         for(int i=0;i<tokens.size();i++){
@@ -715,8 +715,13 @@ public class Parser {
             if (token.getValue().equals("!") || token.getValue().equals("-") || token.getValue().equals("+")) {
                 Expr2 expr2 = new Expr2();
                 expr2.op = tokens.poll();
-                expr2.expr_q_dash = expr_q_dash_function();
-                return expr2;
+                Expr expr = expr_function();
+                if(expr!=null){
+                    expr2.expr=expr;
+                    expr2.expr_q_dash = expr_q_dash_function();
+                    return expr2;
+                }
+
             }
 
             if (token.getValue().equals("(")) {
