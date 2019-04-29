@@ -183,7 +183,8 @@ public class Parser {
                     tokens.peek().getType().equals("BOOL") ||
                     tokens.peek().getType().equals("INT") ||
                     tokens.peek().getType().equals("FLOAT")||
-                    tokens.peek().getType().equals("STRING")) {
+                    tokens.peek().getType().equals("STRING")||
+                    tokens.peek().getType().equals("CHAR")) {
                 return tokens.poll();
             }
         }
@@ -461,6 +462,7 @@ public class Parser {
                         expr_stmt1.simicolon = tokens.poll();
                         return expr_stmt1;
                     } else {
+
                         System.out.println("Error444: ; is missing");
                         System.exit(0);
                     }
@@ -902,13 +904,17 @@ public class Parser {
                     token.getType().equals("MINUS") ||
                     token.getType().equals("DIVIDE") ||
                     token.getType().equals("MULTIPLY") ||
-                    token.getType().equals("MOD")) {
+                    token.getType().equals("MOD")||
+                    token.getType().equals("BITWISE_AND")||
+                    token.getType().equals("BITWISE_OR")||
+                    token.getType().equals("BITWISE_NOT")) {
                 expr_t_dash.op = tokens.poll();
                 Expr expr = expr_function();
                 if (expr != null) {
                     expr_t_dash.expr = expr;
                     return expr_t_dash;
                 } else {
+                    System.out.println(tokens);
                     System.out.println("Error866: expression can't be empty");
                     System.exit(0);
                 }

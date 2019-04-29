@@ -22,7 +22,7 @@ public class Main {
         String code = fileHandler.readInput("files/input.c");
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(code);
         ArrayList<Token> tokens = lexicalAnalyzer.generateTokens();
-        fileHandler.writeOutput(tokens, "files/output.txt");
+        fileHandler.writeOutput(tokens, "files/tokens.txt");
         Parser parser = new Parser(tokens);
         Program program = parser.parse();
         Gson gson = new Gson();

@@ -61,6 +61,7 @@ expr3 -> OR expr
           | * expr
           | / expr
           | % expr
+          | & expr
 expr4 -> expr3 expr4
           | ϵ
 

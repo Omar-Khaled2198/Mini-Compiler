@@ -59,6 +59,14 @@ public class LexicalAnalyzer {
 			while (i+1<tokens.size()&&tokens.get(i).getEnd() > tokens.get(i + 1).getStart()) {
 				tokens.remove(i + 1);
 			}
+
+
+			if(tokens.get(i).getType().equals("ID")){
+				if(i+1<tokens.size()&&tokens.get(i+1).getType().equals("DOT")){
+					System.out.println("Undefined: "+ tokens.get(i).getValue()+tokens.get(i+1).getValue());
+					System.exit(0);
+				}
+			}
 			
 		
 			if(i+1<tokens.size()&&tokens.get(i+1).getStart()-tokens.get(i).getEnd()>1) {
