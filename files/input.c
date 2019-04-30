@@ -1,26 +1,26 @@
-bool isPowerOfTwo(int x) {
-    /*
-    Try multiline comment
-    */
-	// First x in the below expression is
-	// for the case when x is 0
-	float f;
-	f = 0.65; // extra added to rules
-	int x;
-	x = 5;
-	int y;
-	y = 6;
-	int z;
-	z = x;
-    // string hi = "hiasjfn;lwqmef;qwefqewf"; NOT IN GRAMMAR RULES SENT
-    char k;
-    k = 'k';
-    bool f;
-    f = true;
-    int arr[];
+int main (){
+    int val;
+    val =  3+5*7;
+    int m;
+    m = 3;
+    String text;
+    text ="int x+1";
+    while(val<3&&m>0)
+    {
+        int x;
+        int y;
+        int z;
+    }
 
-    arr = new int[10];
-    z = x + y;
+    /* this is a null
+        line commoent */
 
-	return x && (!(x & (x - 1)));
+    // single line comment
+
+
+    String x;
+    x= "/*hello";
+
+    float x;
+    x=3.5;
 }

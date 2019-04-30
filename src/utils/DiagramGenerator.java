@@ -12,6 +12,8 @@ public class DiagramGenerator {
 
     public DiagramGenerator(String nodes){
 
+        String nodeEscaped = escape(nodes);
+
         page="<!doctype html>\n" +
                 "<html>\n" +
                 "<head>\n" +
@@ -33,7 +35,7 @@ public class DiagramGenerator {
                 "  var reader = new VTree.reader.Object();\n" +
                 "\n" +
                 "  function updateTree() {\n" +
-                "    var s = '" + nodes + "';\n" +
+                "    var s = '" + nodeEscaped + "';\n" +
                 "    var jsonData = JSON.parse(s);\n" +
                 "\n" +
                 "\n" +
@@ -74,5 +76,21 @@ public class DiagramGenerator {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String escape(String string) {
+        String escapes[][] = new String[][]{
+                {"\\", "\\\\"},
+                {"\"", "\\\""},
+                {"\n", "\\n"},
+                {"\r", "\\r"},
+                {"\b", "\\b"},
+                {"\f", "\\f"},
+                {"\t", "\\t"}
+        };
+        for (String[] esc : escapes) {
+            string = string.replace(esc[0], esc[1]);
+        }
+        return string;
     }
 }
