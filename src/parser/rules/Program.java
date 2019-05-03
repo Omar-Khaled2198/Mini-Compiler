@@ -1,12 +1,7 @@
 package parser.rules;
 
 
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement
 public class Program {
-
-
 
     public Decl_List decl_list;
 

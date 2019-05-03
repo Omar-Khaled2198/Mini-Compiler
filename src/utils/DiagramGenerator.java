@@ -23,7 +23,7 @@ public class DiagramGenerator {
                 "\n" +
                 "<link rel=\"stylesheet\" href=\"css/vtree.css\" type=\"text/css\"/>\n" +
                 "\n" +
-                "<script src=\"https://d3js.org/d3.v3.min.js\" charset=\"utf-8\"></script>\n" +
+                "<script src=\"dist/d3.v3.min.js\" charset=\"utf-8\"></script>\n" +
                 "<script src=\"dist/vtree.js\"></script>\n" +
                 "\n" +
                 "<script type=\"text/javascript\">\n" +

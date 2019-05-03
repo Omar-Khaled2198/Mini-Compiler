@@ -11,8 +11,10 @@ public class Parser {
     private Queue<Token> tokens;
 
     public Parser(ArrayList<Token> tokens) {
+
         for(int i=0;i<tokens.size();i++){
-            if(tokens.get(i).getType().equals("SINGLE_COMMENT")||tokens.get(i).getType().equals("MULTI_COMMENT")){
+            if(tokens.get(i).getType().equals("SINGLE_COMMENT")||
+                    tokens.get(i).getType().equals("MULTI_COMMENT")){
                 tokens.remove(i);
                 i--;
             }
@@ -22,9 +24,12 @@ public class Parser {
     }
 
     public Program parse() {
+
         Program program = program_function();
         return  program;
     }
+
+    // program -> decl_list
 
     private Program program_function() {
 
@@ -35,12 +40,13 @@ public class Parser {
                 program.decl_list = decl_list;
                 return program;
             }
-
-
         }
 
         return null;
     }
+
+
+    //decl_list -> decl decl_list'
 
     private Decl_List decl_list_function() {
 
@@ -51,14 +57,13 @@ public class Parser {
                 decl_list.decl = decl;
                 decl_list.decl_list_dash = decl_list_dash_function();
                 return decl_list;
-
             }
-
         }
-
         return null;
 
     }
+
+    //decl_list' -> decl decl_list' | ϵ
 
     private Decl_List_Dash decl_list_dash_function() {
         if (tokens.peek() != null) {
@@ -74,25 +79,32 @@ public class Parser {
         return null;
     }
 
+    // decl -> var_decl | fun_decl
+
     private Decl decl_function() {
         if (tokens.peek() != null) {
 
             Token type_spec = type_spec_function();
-            Token id;
+            Token id=null;
             if (type_spec != null) {
                 if (tokens.peek() != null && tokens.peek().getType().equals("ID")) {
                     id = tokens.poll();
                 } else {
-                    System.out.println("Error79: can't resolve '" + tokens.peek().getValue() + "'");
-                    System.exit(0);
-                    return null;
+                    if(tokens.peek()==null){
+                        System.out.println("Error94: missing variable name");
+                        System.exit(0);
+                    } else {
+                        System.out.println("Error79: can't resolve '" + tokens.peek().getValue() + "'");
+                        System.exit(0);
+                    }
                 }
 
             } else {
                 System.out.println("Error85: can't resolve '" + tokens.peek().getValue() + "'");
                 System.exit(0);
-                return null;
             }
+
+            // variable
             if (tokens.peek() != null && !tokens.peek().getValue().equals("(")) {
                 Var_Decl var_decl = var_decl_function();
                 if (var_decl != null) {
@@ -102,6 +114,7 @@ public class Parser {
                 }
             }
 
+            // function
             if (tokens.peek() != null && tokens.peek().getValue().equals("(")) {
 
                 Fun_Decl fun_decl = fun_decl_function();
@@ -123,6 +136,8 @@ public class Parser {
 
     }
 
+    // var_decl -> type_spec IDENT var_decl'
+
     private Var_Decl var_decl_function() {
         if (tokens.peek() != null) {
             Var_Decl var_decl = new Var_Decl();
@@ -136,6 +151,8 @@ public class Parser {
         return null;
 
     }
+
+    // var_decl' -> ; | [ ] ;
 
     private Var_Decl_Dash var_decl_dash_function() {
         if (tokens.peek() != null) {
@@ -177,6 +194,12 @@ public class Parser {
         return null;
     }
 
+
+    // ype_spec -> VOID
+    //            | BOOL
+    //            | INT
+    //            | FLOAT
+
     private Token type_spec_function() {
         if (tokens.peek() != null) {
             if (tokens.peek().getType().equals("VOID") ||
@@ -191,6 +214,8 @@ public class Parser {
         return null;
 
     }
+
+    // fun_decl -> type_spec IDENT ( params ) compound_stmt
 
     private Fun_Decl fun_decl_function() {
         if (tokens.peek() != null) {
@@ -221,6 +246,8 @@ public class Parser {
         return null;
     }
 
+    // params -> param_list | VOID
+
     private Params params_function() {
         if (tokens.peek() != null) {
             Param_List param_list = param_list_function();
@@ -241,6 +268,8 @@ public class Parser {
         return null;
     }
 
+    // param_list -> param param_list'
+
     private Param_List param_list_function() {
         if (tokens.peek() != null) {
             Param param = param_function();
@@ -255,6 +284,8 @@ public class Parser {
         return null;
 
     }
+
+    // param_list' -> , param param_list' | ϵ
 
     private Param_List_Dash param_list_dash_function() {
         if (tokens.peek() != null) {
@@ -277,6 +308,9 @@ public class Parser {
         return null;
 
     }
+
+
+    // param -> type_spec IDENT param'
 
     private Param param_function() {
 
@@ -304,6 +338,8 @@ public class Parser {
 
     }
 
+    // param' -> [ ] | ϵ
+
     private Param_Dash param_dash_function() {
 
         if (tokens.peek() != null) {
@@ -325,6 +361,8 @@ public class Parser {
 
     }
 
+    // stmt_list -> stmt_list'
+
     private Stmt_List stmt_list_function() {
         if (tokens.peek() != null) {
             Stmt_List stmt_list = new Stmt_List();
@@ -334,6 +372,9 @@ public class Parser {
 
         return null;
     }
+
+
+    // stmt_list' -> stmt stmt_list' | ϵ
 
     private Stmt_List_Dash stmt_list_dash_function() {
         if (tokens.peek() != null) {
@@ -349,6 +390,14 @@ public class Parser {
         return null;
 
     }
+
+    //stmt -> expr_stmt
+    //        | compound_stmt
+    //        | local_decls
+    //        |if_stmt
+    //        | while_stmt
+    //        | return_stmt
+    //        | break_stmt
 
     private Stmt stmt_function() {
 
@@ -389,10 +438,20 @@ public class Parser {
                 return local_decals;
             }
 
-
-            Expr_Stmt expr_stmt = expr_stmt_function();
-            if(expr_stmt!=null){
-                return expr_stmt;
+            if(tokens.peek().getType().equals("ID")||
+                    tokens.peek().getType().equals("NOT")||
+                    tokens.peek().getType().equals("PLUS")||
+                    tokens.peek().getType().equals("MINUS")||
+                    tokens.peek().getType().equals("LEFT_ROUND_B")||
+                    tokens.peek().getType().equals("INTEGRAL_LITERAL") ||
+                    tokens.peek().getType().equals("FlOAT_LITERAL") ||
+                    tokens.peek().getType().equals("CHAT_LITERAL") ||
+                    tokens.peek().getType().equals("STRING_LITERAL") ||
+                    tokens.peek().getType().equals("BOOL_LITERAL")){
+                Expr_Stmt expr_stmt = expr_stmt_function();
+                if(expr_stmt!=null){
+                    return expr_stmt;
+                }
             }
 
 //            System.out.println("Error: can't resolve '"+tokens.peek().getValue()+"'");
@@ -402,6 +461,9 @@ public class Parser {
         return null;
 
     }
+
+
+    // return_stmt -> RETURN return_stmt'
 
     private Return_Stmt return_stmt_function() {
 
@@ -420,6 +482,9 @@ public class Parser {
         return null;
 
     }
+
+
+    // return_stmt' -> ; | expr ;
 
     private Return_Stmt_Dash return_stmt_dash_function() {
 
@@ -445,6 +510,8 @@ public class Parser {
         System.exit(0);
         return null;
     }
+
+    // expr_stmt -> expr ; | ;
 
     private Expr_Stmt expr_stmt_function() {
 
@@ -475,6 +542,9 @@ public class Parser {
 
     }
 
+
+    // while_stmt -> WHILE ( expr ) stmt
+
     private While_Stmt while_stmt_function() {
 
         if (tokens.peek() != null) {
@@ -498,6 +568,7 @@ public class Parser {
                             System.exit(0);
                         }
                     } else {
+
                         System.out.println("Error472: expression can't be empty");
                         System.exit(0);
                     }
@@ -511,6 +582,9 @@ public class Parser {
         return null;
 
     }
+
+
+    // compound_stmt -> { stmt_list }
 
     private Compound_Stmt compound_stmt_function() {
         if (tokens.peek() != null) {
@@ -543,6 +617,9 @@ public class Parser {
 
         return null;
     }
+
+
+    // if_stmt -> IF ( expr ) stmt if_stmt'
 
     private If_Stmt if_stmt_function() {
         if (tokens.peek() != null) {
@@ -582,6 +659,9 @@ public class Parser {
         return null;
     }
 
+
+    // if_stmt' -> ELSE stmt | ϵ
+
     private If_Stmt_Dash if_stmt_dash_function() {
 
         if (tokens.peek() != null) {
@@ -600,6 +680,9 @@ public class Parser {
 
     }
 
+
+    // local_decls -> local_decls'
+
     private Local_Decals local_decals_function() {
 
         if (tokens.peek() != null) {
@@ -616,6 +699,9 @@ public class Parser {
 
     }
 
+
+    // local_decls' -> local_decl local_decls' | ϵ
+
     private Local_Decals_Dash local_decals_dash_function() {
 
         if (tokens.peek() != null) {
@@ -631,6 +717,9 @@ public class Parser {
         return null;
 
     }
+
+
+    // local_decl -> type_spec IDENT local_decl'
 
     private Local_Decal local_decal_function() {
 
@@ -659,6 +748,9 @@ public class Parser {
         return null;
 
     }
+
+
+    // local_decl' -> ; | [ ] ;
 
     private Local_Decal_Dash local_decal_dash_function() {
 
@@ -700,6 +792,17 @@ public class Parser {
         return null;
 
     }
+
+
+    // expr -> IDENT expr'' expr''''
+    //          | ! expr expr''''
+    //          | - expr expr''''
+    //          | + expr expr''''
+    //          | ( expr ) expr''''
+    //          | BOOL_LIT expr''''
+    //          | INT_LIT expr''''
+    //          | FLOAT_LIT expr''''
+    //          | NEW type_spec [ expr ] expr''''
 
     private Expr expr_function() {
 
@@ -784,13 +887,15 @@ public class Parser {
                     System.out.println("Error736: can't resolve '"+token.getValue()+"'");
                     System.exit(0);
                 }
-                return null;
             }
         }
-
+        System.out.println("Error891: expression can't be empty or wrong");
+        System.exit(0);
         return null;
 
     }
+
+    // expr' -> = expr | ϵ
 
     private Expr_S_Dash expr_s_dash_function() {
 
@@ -811,6 +916,12 @@ public class Parser {
 
         return null;
     }
+
+    // expr'' -> [ expr ] expr'
+    //          | = expr
+    //          | ( args )
+    //          | . size
+    //          | ϵ
 
     private Expr_D_Dash expr_d_dash_function() {
 
@@ -833,7 +944,7 @@ public class Parser {
 
                     return null;
                 } else {
-                    System.out.println("Error788: expression can't be empty");
+                    System.out.println("Error788: expression can't be empty or wrong");
                     System.exit(0);
                 }
             }
@@ -860,7 +971,7 @@ public class Parser {
                     expr_d_dash3.RS = tokens.poll();
                     return expr_d_dash3;
                 } else {
-                    System.out.println("Error815: ) is missing");
+                    System.out.println("Error973: ) is missing");
                     System.exit(0);
                 }
 
@@ -874,7 +985,7 @@ public class Parser {
                     expr_d_dash4.size = tokens.poll();
                     return expr_d_dash4;
                 } else {
-                    System.out.println("Error829: function is missing");
+                    System.out.println("Error987: function is missing");
                     System.exit(0);
                 }
 
@@ -886,6 +997,21 @@ public class Parser {
         return null;
 
     }
+
+    // expr''' -> OR expr
+    //          | EQ expr
+    //          | NE expr
+    //          | LE expr
+    //          | < expr
+    //          | GE expr
+    //          | > expr
+    //          | AND expr
+    //          | + expr
+    //          | - expr
+    //          | * expr
+    //          | / expr
+    //          | % expr
+    //          | & expr
 
     private Expr_T_Dash expr_t_dash_function() {
 
@@ -914,8 +1040,7 @@ public class Parser {
                     expr_t_dash.expr = expr;
                     return expr_t_dash;
                 } else {
-                    System.out.println(tokens);
-                    System.out.println("Error866: expression can't be empty");
+                    System.out.println("Error1042: expression can't be empty");
                     System.exit(0);
                 }
             }
@@ -924,6 +1049,9 @@ public class Parser {
         return null;
 
     }
+
+
+    // expr'''' -> expr''' expr'''' | ϵ
 
     private Expr_Q_Dash expr_q_dash_function() {
 
@@ -939,6 +1067,8 @@ public class Parser {
         return null;
     }
 
+    // args -> arg_list | ϵ
+
     private Args args_function() {
 
         if (tokens.peek() != null) {
@@ -949,6 +1079,8 @@ public class Parser {
 
         return null;
     }
+
+    // arg_list -> expr arg_list'
 
     private Args_List args_list_function() {
 
@@ -965,6 +1097,8 @@ public class Parser {
         return null;
     }
 
+    // arg_list' -> , expr arg_list' | ϵ
+
     private Args_List_Dash args_list_dash_function() {
 
         if (tokens.peek() != null) {
@@ -977,7 +1111,7 @@ public class Parser {
                     args_list_dash.args_list_dash = args_list_dash_function();
                     return args_list_dash;
                 } else {
-                    System.out.println("Error928: arguments is missing");
+                    System.out.println("Error1113: arguments is missing");
                     System.exit(0);
                 }
             }

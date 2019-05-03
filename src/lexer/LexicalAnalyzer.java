@@ -61,14 +61,14 @@ public class LexicalAnalyzer {
 			}
 
 
-			if(tokens.get(i).getType().equals("ID")){
-				if(i+1<tokens.size()&&tokens.get(i+1).getType().equals("DOT")){
-					System.out.println("Undefined: "+ tokens.get(i).getValue()+tokens.get(i+1).getValue());
-					System.exit(0);
-				}
+			if(i+2<tokens.size()&&tokens.get(i).getType().equals("ID")&&
+					tokens.get(i+1).getType().equals("DOT")&&
+					!tokens.get(i+2).getType().equals("ID")) {
+				System.out.println("Undefined: " + tokens.get(i).getValue());
+				System.exit(0);
 			}
-			
-		
+
+
 			if(i+1<tokens.size()&&tokens.get(i+1).getStart()-tokens.get(i).getEnd()>1) {
 				Pattern pattern = Pattern.compile("\\S+");
 				Matcher matcher = pattern.matcher(code.substring(tokens.get(i).getEnd(), tokens.get(i+1).getStart()));

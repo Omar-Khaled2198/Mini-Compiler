@@ -1,10 +1,17 @@
 program -> decl_list
+
 decl_list -> decl decl_list'
 decl_list' -> decl decl_list' | ϵ
 decl -> var_decl | fun_decl
+
 var_decl -> type_spec IDENT var_decl'
 var_decl' -> ; | [ ] ;
-type_spec -> VOID | BOOL | INT | FLOAT
+
+type_spec -> VOID
+            | BOOL
+            | INT
+            | FLOAT
+
 fun_decl -> type_spec IDENT ( params ) compound_stmt
 
 params -> param_list | VOID
@@ -15,40 +22,54 @@ param' -> [ ] | ϵ
 
 stmt_list -> stmt_list'
 stmt_list' -> stmt stmt_list' | ϵ
-stmt -> expr_stmt | compound_stmt | local_decls |if_stmt | while_stmt | return_stmt | break_stmt
+
+stmt -> expr_stmt
+        | compound_stmt
+        | local_decls
+        | if_stmt
+        | while_stmt
+        | return_stmt
+        | break_stmt
+
+expr_stmt -> expr ; | ;
 
 return_stmt -> RETURN return_stmt'
 return_stmt' -> ; | expr ;
 
-expr_stmt -> expr ; | ;
 while_stmt -> WHILE ( expr ) stmt
+
 compound_stmt -> { stmt_list }
+
+if_stmt -> IF ( expr ) stmt if_stmt'
+if_stmt' -> ELSE stmt | ϵ
 
 local_decls -> local_decls'
 local_decls' -> local_decl local_decls' | ϵ
 local_decl -> type_spec IDENT local_decl'
 local_decl' -> ; | [ ] ;
 
-if_stmt -> IF ( expr ) stmt if_stmt'
-if_stmt' -> ELSE stmt | ϵ
 
-expr -> IDENT expr2 expr4
-          | ! expr expr4
-          | - expr expr4
-          | + expr expr4
-          | ( expr ) expr4
-          | BOOL_LIT expr4
-          | INT_LIT expr4
-          | FLOAT_LIT expr4
-          | NEW type_spec [ expr ] expr4
-expr1 -> = expr
+
+expr -> IDENT expr'' expr''''
+          | ! expr expr''''
+          | - expr expr''''
+          | + expr expr''''
+          | ( expr ) expr''''
+          | BOOL_LIT expr''''
+          | INT_LIT expr''''
+          | FLOAT_LIT expr''''
+          | NEW type_spec [ expr ] expr''''
+
+expr' -> = expr
           | ϵ
-expr2 -> [ expr ] expr1
+
+expr'' -> [ expr ] expr'
           | = expr
           | ( args )
           | . size
           | ϵ
-expr3 -> OR expr
+
+expr''' -> OR expr
           | EQ expr
           | NE expr
           | LE expr
@@ -62,7 +83,8 @@ expr3 -> OR expr
           | / expr
           | % expr
           | & expr
-expr4 -> expr3 expr4
+
+expr'''' -> expr''' expr''''
           | ϵ
 
 args -> arg_list | ϵ
