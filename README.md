@@ -14,9 +14,9 @@ There are different phases of compiler as follow:
 - **Token:**  Token is a sequence of characters that represent lexical unit, which matches with the pattern, such as keywords, operators, identifiers etc.
 - **Lexeme:**  Lexeme is instance of a token i.e., group of characters forming a token.
 - **Pattern:**  Pattern describes the rule that the lexemes of a token takes. It is the structure that must be matched by strings.
-
-    ....
-    ....
+```
+    ...
+    ...
     SINGLE_COMMENT \/\/.+
     MULTI_COMMENT \/\*(.|\n)*?\\*\/ ?
     INTEGRAL_LITERAL \b0|[1-9][0-9]*\b
@@ -25,6 +25,8 @@ There are different phases of compiler as follow:
     STRING_LITERAL \".*\"
     ...
     ...
+
+```
     
 ## Syntax Analysis
 Syntax analysis is the second phase of compiler which is also called as parsing.
