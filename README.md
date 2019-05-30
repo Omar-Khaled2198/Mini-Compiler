@@ -34,6 +34,7 @@ Syntax analysis is the second phase of compiler which is also called as parsing.
 - A parse tree describes the syntactic structure of the input.
 
 Parser follow production rules (**Grammer**) defined by means of [context free grammar](https://en.wikipedia.org/wiki/Context-free_grammar) (CFG). 
+<br>
 Grammer ex:
 
     program -> decl_list  
